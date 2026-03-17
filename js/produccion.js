@@ -5,9 +5,9 @@
 
 // ── Default Data ───────────────────────────────────────────
 const DEFAULT_GANTT = [
-  { id: 1, etapa: 'Etapa ejemplo 1', responsable: 'Carolina Achondo', inicio: '01/01/2025', termino: '30/06/2025', avance: 0, estado: 'Pendiente' },
-  { id: 2, etapa: 'Etapa ejemplo 2', responsable: 'Matías Correa',    inicio: '01/02/2025', termino: '30/09/2025', avance: 0, estado: 'Pendiente' },
-  { id: 3, etapa: 'Etapa ejemplo 3', responsable: 'Ivonne Zuñiga',    inicio: '01/03/2025', termino: '30/11/2025', avance: 0, estado: 'Pendiente' },
+  { id: 1, etapa: 'Etapa ejemplo 1', responsable: 'Pamela Abello', inicio: '01/01/2025', termino: '30/06/2025', avance: 0, estado: 'Pendiente' },
+  { id: 2, etapa: 'Etapa ejemplo 2', responsable: 'Pamela Abello', inicio: '01/02/2025', termino: '30/09/2025', avance: 0, estado: 'Pendiente' },
+  { id: 3, etapa: 'Etapa ejemplo 3', responsable: 'Pamela Abello', inicio: '01/03/2025', termino: '30/11/2025', avance: 0, estado: 'Pendiente' },
 ];
 
 const DEFAULT_PROVEEDORES = [

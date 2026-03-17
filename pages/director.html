@@ -204,6 +204,190 @@
     .dir-section-title i {
       color: #7C3AED;
     }
+
+    /* ── Organigrama ───────────────────────────── */
+    .org-tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0 24px 0;
+      overflow-x: auto;
+    }
+    .org-node-top {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, #7C3AED, #6D28D9);
+      color: white;
+      border-radius: 16px;
+      padding: 16px 28px;
+      min-width: 220px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+      position: relative;
+    }
+    .org-node-top .org-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .org-node-top .org-name {
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .org-node-top .org-role {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 3px;
+    }
+    /* vertical connector from top node */
+    .org-connector-v {
+      width: 2px;
+      height: 28px;
+      background: #D1D5DB;
+    }
+    /* horizontal bar connecting level-2 cards */
+    .org-level2-wrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      gap: 0;
+    }
+    .org-level2-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: calc(12.5% + 60px);
+      right: calc(12.5% + 60px);
+      height: 2px;
+      background: #D1D5DB;
+    }
+    .org-branch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 190px;
+      max-width: 210px;
+      margin: 0 10px;
+    }
+    /* vertical stub from horizontal bar down to level-2 card */
+    .org-branch-stub {
+      width: 2px;
+      height: 24px;
+      background: #D1D5DB;
+    }
+    /* level-2 area card */
+    .org-area-card {
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: center;
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .org-area-card .org-avatar-sm {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0 auto 8px auto;
+      color: white;
+    }
+    .org-area-card .org-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.3;
+    }
+    .org-area-card .org-role {
+      font-size: 11px;
+      color: #6B7280;
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+    .org-area-card.vacante {
+      border: 2px dashed #D1D5DB;
+      background: #F9FAFB;
+    }
+    .org-area-card.vacante .org-name { color: #9CA3AF; }
+    .org-vacante-badge {
+      display: inline-block;
+      background: #F3F4F6;
+      color: #9CA3AF;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 5px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    /* level-3 team members */
+    .org-team-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+      margin-top: 0;
+    }
+    .org-team-connector {
+      width: 2px;
+      height: 16px;
+      background: #E5E7EB;
+    }
+    .org-team-member {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .org-team-member .tm-name {
+      font-weight: 600;
+      color: #374151;
+    }
+    .org-team-member .tm-role {
+      font-size: 11px;
+      color: #9CA3AF;
+      margin-top: 2px;
+    }
+    .org-placeholder {
+      background: #F9FAFB;
+      border: 1px dashed #E5E7EB;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: #9CA3AF;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      font-style: italic;
+    }
+    @media (max-width: 860px) {
+      .org-level2-wrap {
+        flex-direction: column;
+        align-items: center;
+      }
+      .org-level2-wrap::before { display: none; }
+      .org-branch { margin: 8px 0; }
+      .org-branch-stub { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -266,7 +450,112 @@
         <!-- Rendered by director.js -->
       </div>
 
-      <!-- ── Sección 2: KPIs por Jefatura ──────────────── -->
+      <!-- ── Sección 2: Organigrama ETM ───────────────────── -->
+      <div class="dir-section-title">
+        <i class="fa-solid fa-sitemap"></i>
+        Organigrama ETM
+      </div>
+      <div class="panel" style="margin-bottom:28px">
+        <div class="panel-body">
+          <div class="org-tree">
+
+            <!-- TOP: Director Ejecutivo -->
+            <div class="org-node-top">
+              <div class="org-avatar">NU</div>
+              <div class="org-name">Nicolás Uranga</div>
+              <div class="org-role">Director Ejecutivo</div>
+            </div>
+
+            <!-- Vertical connector -->
+            <div class="org-connector-v"></div>
+
+            <!-- LEVEL 2: 4 áreas + their teams -->
+            <div class="org-level2-wrap">
+
+              <!-- Contenidos y Ecosistemas -->
+              <div class="org-branch">
+                <div class="org-branch-stub"></div>
+                <div class="org-area-card" style="background:#F0FDF4;border:1.5px solid #86EFAC">
+                  <div class="org-avatar-sm" style="background:#16A34A">MI</div>
+                  <div class="org-name">María Ignacia</div>
+                  <div class="org-role">Jefa Contenidos y Ecosistemas</div>
+                </div>
+                <div class="org-team-wrap">
+                  <div class="org-team-connector"></div>
+                  <div class="org-team-member">
+                    <div class="tm-name">Juan Pablo Lobos</div>
+                  </div>
+                  <div class="org-team-connector"></div>
+                  <div class="org-team-member">
+                    <div class="tm-name">Ignacio Cisternas</div>
+                  </div>
+                  <div class="org-team-connector"></div>
+                  <div class="org-team-member">
+                    <div class="tm-name">León Fernández de Castro</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Producción -->
+              <div class="org-branch">
+                <div class="org-branch-stub"></div>
+                <div class="org-area-card" style="background:#FFF7ED;border:1.5px solid #FED7AA">
+                  <div class="org-avatar-sm" style="background:#EA580C">PA</div>
+                  <div class="org-name">Pamela Abello</div>
+                  <div class="org-role">Jefa Producción</div>
+                </div>
+                <div class="org-team-wrap">
+                  <div class="org-team-connector"></div>
+                  <div class="org-placeholder">Equipo por definir</div>
+                </div>
+              </div>
+
+              <!-- Comercial (Vacante) -->
+              <div class="org-branch">
+                <div class="org-branch-stub"></div>
+                <div class="org-area-card vacante">
+                  <div class="org-avatar-sm" style="background:#9CA3AF">?</div>
+                  <div class="org-name">Jefe/a Comercial</div>
+                  <div class="org-role">Área Comercial</div>
+                  <div class="org-vacante-badge">Vacante</div>
+                </div>
+                <div class="org-team-wrap">
+                  <div class="org-team-connector"></div>
+                  <div class="org-team-member">
+                    <div class="tm-name">Catalina Pizarro</div>
+                    <div class="tm-role">Analista Comercial y Control de Gestión</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Marketing y Comunicaciones -->
+              <div class="org-branch">
+                <div class="org-branch-stub"></div>
+                <div class="org-area-card" style="background:#FFF1F2;border:1.5px solid #FECDD3">
+                  <div class="org-avatar-sm" style="background:#E11D48">JL</div>
+                  <div class="org-name">Javiera López</div>
+                  <div class="org-role">Jefa Marketing y Comunicaciones</div>
+                </div>
+                <div class="org-team-wrap">
+                  <div class="org-team-connector"></div>
+                  <div class="org-team-member">
+                    <div class="tm-name">Andrea Báez</div>
+                    <div class="tm-role">Líder de Comunidades</div>
+                  </div>
+                  <div class="org-team-connector"></div>
+                  <div class="org-team-member">
+                    <div class="tm-name">Daniela Alegría</div>
+                    <div class="tm-role">Diseñadora</div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /org-level2-wrap -->
+          </div><!-- /org-tree -->
+        </div>
+      </div>
+
+      <!-- ── Sección 3: KPIs por Jefatura ──────────────── -->
       <div class="dir-section-title">
         <i class="fa-solid fa-users-gear"></i>
         KPIs por Jefatura
@@ -276,7 +565,7 @@
         <!-- Rendered by director.js -->
       </div>
 
-      <!-- ── Sección 3: Notas del Director ─────────────── -->
+      <!-- ── Sección 4: Notas del Director ─────────────── -->
       <div class="panel">
         <div class="panel-header">
           <div>

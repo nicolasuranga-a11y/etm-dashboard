@@ -4,19 +4,16 @@
    ============================================================ */
 
 const TEAM_MEMBERS = [
-  'Ivonne Zuñiga',
-  'Carolina Achondo',
-  'Antonia Torres',
-  'Daniel López',
-  'Paula Flores',
-  'Jesús Villafane',
-  'Francisco Álvarez',
-  'Catalina Taulis',
-  'Matías Correa',
-  'Ismael Marín',
-  'Camila Sáez',
-  'Vicente Lefevre',
-  'Ignacia Cisternas',
+  'Nicolás Uranga',
+  'María Ignacia',
+  'Juan Pablo Lobos',
+  'Ignacio Cisternas',
+  'León Fernández de Castro',
+  'Pamela Abello',
+  'Catalina Pizarro',
+  'Javiera López',
+  'Andrea Báez',
+  'Daniela Alegría',
   '(Otro)',
 ];
 

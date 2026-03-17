@@ -4,26 +4,37 @@
    ============================================================ */
 
 const DEFAULT_PARTNERS = [
-  { id: 1, org: 'Partner ejemplo 1', tipo: 'Tipo por definir', estado: 'Activo',    resp: 'Daniel López',  desde: '-', contacto: '-', notas: 'Notas por completar' },
-  { id: 2, org: 'Partner ejemplo 2', tipo: 'Tipo por definir', estado: 'Pendiente', resp: 'Ivonne Zuñiga', desde: '-', contacto: '-', notas: 'Notas por completar' },
+  { id: 1, org: 'Partner ejemplo 1', tipo: 'Tipo por definir', estado: 'Activo',    resp: 'María Ignacia',         desde: '-', contacto: '-', notas: 'Notas por completar' },
+  { id: 2, org: 'Partner ejemplo 2', tipo: 'Tipo por definir', estado: 'Pendiente', resp: 'Juan Pablo Lobos',      desde: '-', contacto: '-', notas: 'Notas por completar' },
 ];
 
 const DEFAULT_PUBLICAS = [
-  { id: 1, org: 'Entidad pública ejemplo 1', area: 'Área por definir', estado: 'Pendiente', resp: 'Ivonne Zuñiga', programa: 'Programa por definir', monto: null, postulacion: 'Pendiente' },
-  { id: 2, org: 'Entidad pública ejemplo 2', area: 'Área por definir', estado: 'Pendiente', resp: 'Daniel López',  programa: 'Programa por definir', monto: null, postulacion: 'Pendiente' },
+  { id: 1, org: 'Entidad pública ejemplo 1', area: 'Área por definir', estado: 'Pendiente', resp: 'María Ignacia',    programa: 'Programa por definir', monto: null, postulacion: 'Pendiente' },
+  { id: 2, org: 'Entidad pública ejemplo 2', area: 'Área por definir', estado: 'Pendiente', resp: 'Ignacio Cisternas', programa: 'Programa por definir', monto: null, postulacion: 'Pendiente' },
 ];
 
 const DEFAULT_PROYECTOS = [
-  { id: 1, proyecto: 'Proyecto ejemplo 1', resp: 'Daniel López',  estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
-  { id: 2, proyecto: 'Proyecto ejemplo 2', resp: 'Ivonne Zuñiga', estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
-  { id: 3, proyecto: 'Proyecto ejemplo 3', resp: 'Daniel López',  estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
+  { id: 1, proyecto: 'Proyecto ejemplo 1', resp: 'María Ignacia',              estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
+  { id: 2, proyecto: 'Proyecto ejemplo 2', resp: 'Juan Pablo Lobos',           estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
+  { id: 3, proyecto: 'Proyecto ejemplo 3', resp: 'León Fernández de Castro',   estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
 ];
 
 const TEAM_KPIS = [
   {
-    nombre: 'Daniel López',
-    rol: 'Ecosistemas',
-    avatar: 'DL',
+    nombre: 'María Ignacia',
+    rol: 'Jefa Contenidos y Ecosistemas',
+    avatar: 'MI',
+    color: '#16A34A',
+    kpis: [
+      { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 2', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 3', actual: 0, meta: 1, unit: '' },
+    ]
+  },
+  {
+    nombre: 'Juan Pablo Lobos',
+    rol: 'Contenidos y Ecosistemas',
+    avatar: 'JP',
     color: '#7C3AED',
     kpis: [
       { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
@@ -32,9 +43,9 @@ const TEAM_KPIS = [
     ]
   },
   {
-    nombre: 'Ivonne Zuñiga',
-    rol: 'Dirección',
-    avatar: 'IZ',
+    nombre: 'Ignacio Cisternas',
+    rol: 'Contenidos y Ecosistemas',
+    avatar: 'IC',
     color: '#2563EB',
     kpis: [
       { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
@@ -43,21 +54,10 @@ const TEAM_KPIS = [
     ]
   },
   {
-    nombre: 'Francisco Álvarez',
-    rol: 'Contenidos',
-    avatar: 'FA',
+    nombre: 'León Fernández de Castro',
+    rol: 'Contenidos y Ecosistemas',
+    avatar: 'LF',
     color: '#059669',
-    kpis: [
-      { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
-      { label: 'KPI 2', actual: 0, meta: 1, unit: '' },
-      { label: 'KPI 3', actual: 0, meta: 1, unit: '' },
-    ]
-  },
-  {
-    nombre: 'Catalina Taulis',
-    rol: 'Ecosistemas',
-    avatar: 'CT',
-    color: '#D97706',
     kpis: [
       { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
       { label: 'KPI 2', actual: 0, meta: 1, unit: '' },

@@ -37,75 +37,72 @@ function handlePasswordKey(e) {
 // ── KPIs por Jefatura — Data ───────────────────────────────
 const JEFATURAS = [
   {
-    id: 'ivonne',
-    nombre: 'Ivonne Zuñiga',
-    rol: 'Dirección / Comercial',
-    avatar: 'IZ',
+    id: 'nicolas',
+    nombre: 'Nicolás Uranga',
+    rol: 'Director Ejecutivo',
+    avatar: 'NU',
     color: '#7C3AED',
     kpis: [
-      { label: 'Sponsors cerrados',    metaKey: 'ivonne_k1_meta', logKey: 'ivonne_k1_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Fondos conseguidos',   metaKey: 'ivonne_k2_meta', logKey: 'ivonne_k2_log', metaDefault: '$—', logDefault: '$—' },
-      { label: 'Reuniones directorio', metaKey: 'ivonne_k3_meta', logKey: 'ivonne_k3_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Fondos totales gestionados', metaKey: 'nicolas_k1_meta', logKey: 'nicolas_k1_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Sponsors cerrados',          metaKey: 'nicolas_k2_meta', logKey: 'nicolas_k2_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Hitos estratégicos cumplidos', metaKey: 'nicolas_k3_meta', logKey: 'nicolas_k3_log', metaDefault: '—', logDefault: '—' },
     ]
   },
   {
-    id: 'carolina',
-    nombre: 'Carolina Achondo',
-    rol: 'Producción',
-    avatar: 'CA',
-    color: '#2563EB',
-    kpis: [
-      { label: 'Proveedores gestionados',   metaKey: 'carolina_k1_meta', logKey: 'carolina_k1_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Hitos cumplidos a tiempo',  metaKey: 'carolina_k2_meta', logKey: 'carolina_k2_log', metaDefault: '—', logDefault: '—' },
-      { label: '% avance producción',       metaKey: 'carolina_k3_meta', logKey: 'carolina_k3_log', metaDefault: '—%', logDefault: '—%' },
-    ]
-  },
-  {
-    id: 'antonia',
-    nombre: 'Antonia Torres',
-    rol: 'Marketing',
-    avatar: 'AT',
-    color: '#D97706',
-    kpis: [
-      { label: 'Publicaciones mensuales',  metaKey: 'antonia_k1_meta', logKey: 'antonia_k1_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Crecimiento seguidores',   metaKey: 'antonia_k2_meta', logKey: 'antonia_k2_log', metaDefault: '—%', logDefault: '—%' },
-      { label: 'Newsletter enviados',      metaKey: 'antonia_k3_meta', logKey: 'antonia_k3_log', metaDefault: '—', logDefault: '—' },
-    ]
-  },
-  {
-    id: 'daniel',
-    nombre: 'Daniel López',
-    rol: 'Ecosistemas',
-    avatar: 'DL',
+    id: 'mariaingnacia',
+    nombre: 'María Ignacia',
+    rol: 'Jefa Contenidos y Ecosistemas',
+    avatar: 'MI',
     color: '#16A34A',
     kpis: [
-      { label: 'Alianzas nuevas',         metaKey: 'daniel_k1_meta', logKey: 'daniel_k1_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Reuniones con partners',  metaKey: 'daniel_k2_meta', logKey: 'daniel_k2_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Proyectos activos',       metaKey: 'daniel_k3_meta', logKey: 'daniel_k3_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Alianzas nuevas',           metaKey: 'mi_k1_meta', logKey: 'mi_k1_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Proyectos activos',         metaKey: 'mi_k2_meta', logKey: 'mi_k2_log', metaDefault: '—', logDefault: '—' },
+      { label: 'EtMtuesday coordinados',    metaKey: 'mi_k3_meta', logKey: 'mi_k3_log', metaDefault: '—', logDefault: '—' },
     ]
   },
   {
-    id: 'paula',
-    nombre: 'Paula Flores',
-    rol: 'RRHH',
-    avatar: 'PF',
+    id: 'pamela',
+    nombre: 'Pamela Abello',
+    rol: 'Jefa Producción',
+    avatar: 'PA',
+    color: '#EA580C',
+    kpis: [
+      { label: 'Proveedores gestionados',        metaKey: 'pa_k1_meta', logKey: 'pa_k1_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Hitos Gantt cumplidos',          metaKey: 'pa_k2_meta', logKey: 'pa_k2_log', metaDefault: '—', logDefault: '—' },
+      { label: '% avance producción EtMday',     metaKey: 'pa_k3_meta', logKey: 'pa_k3_log', metaDefault: '—', logDefault: '—' },
+    ]
+  },
+  {
+    id: 'comercial_vacante',
+    nombre: 'Jefe/a Comercial',
+    rol: 'Comercial',
+    avatar: '?',
+    color: '#9CA3AF',
+    vacante: true,
+    kpis: []
+  },
+  {
+    id: 'javiera',
+    nombre: 'Javiera López',
+    rol: 'Jefa Marketing y Comunicaciones',
+    avatar: 'JL',
+    color: '#E11D48',
+    kpis: [
+      { label: 'Publicaciones mensuales',  metaKey: 'jl_k1_meta', logKey: 'jl_k1_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Crecimiento seguidores',   metaKey: 'jl_k2_meta', logKey: 'jl_k2_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Newsletter enviados',      metaKey: 'jl_k3_meta', logKey: 'jl_k3_log', metaDefault: '—', logDefault: '—' },
+    ]
+  },
+  {
+    id: 'catalina',
+    nombre: 'Catalina Pizarro',
+    rol: 'Analista Comercial y Control de Gestión',
+    avatar: 'CP',
     color: '#0891B2',
     kpis: [
-      { label: 'Contrataciones completadas', metaKey: 'paula_k1_meta', logKey: 'paula_k1_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Evaluaciones realizadas',    metaKey: 'paula_k2_meta', logKey: 'paula_k2_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Capacitaciones',             metaKey: 'paula_k3_meta', logKey: 'paula_k3_log', metaDefault: '—', logDefault: '—' },
-    ]
-  },
-  {
-    id: 'jesus',
-    nombre: 'Jesús Villafane',
-    rol: 'Operaciones',
-    avatar: 'JV',
-    color: '#BE185D',
-    kpis: [
-      { label: 'OC procesadas',          metaKey: 'jesus_k1_meta', logKey: 'jesus_k1_log', metaDefault: '—', logDefault: '—' },
-      { label: 'Pagos a tiempo',         metaKey: 'jesus_k2_meta', logKey: 'jesus_k2_log', metaDefault: '—%', logDefault: '—%' },
-      { label: 'Informes financieros',   metaKey: 'jesus_k3_meta', logKey: 'jesus_k3_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Propuestas enviadas',      metaKey: 'cp_k1_meta', logKey: 'cp_k1_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Seguimiento de clientes',  metaKey: 'cp_k2_meta', logKey: 'cp_k2_log', metaDefault: '—', logDefault: '—' },
+      { label: 'Informes de gestión',      metaKey: 'cp_k3_meta', logKey: 'cp_k3_log', metaDefault: '—', logDefault: '—' },
     ]
   },
 ];
@@ -219,6 +216,29 @@ function renderJefaturas() {
     const card = document.createElement('div');
     card.className = 'panel dir-kpi-card';
     card.style.marginBottom = '0';
+
+    // Special render for vacante card
+    if (jef.vacante) {
+      card.style.cssText = 'margin-bottom:0;border:2px dashed #D1D5DB;background:#F9FAFB';
+      card.innerHTML = `
+        <div class="panel-header" style="padding-bottom:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:44px;height:44px;border-radius:12px;background:#D1D5DB;color:white;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0">?</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:#9CA3AF">${jef.nombre}</div>
+              <div style="font-size:12px;color:#9CA3AF">${jef.rol}</div>
+            </div>
+            <span style="margin-left:auto;display:inline-block;background:#F3F4F6;color:#9CA3AF;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase">Vacante</span>
+          </div>
+        </div>
+        <div class="panel-body" style="padding-top:4px;text-align:center;padding-bottom:20px">
+          <i class="fa-solid fa-user-slash" style="font-size:24px;color:#D1D5DB;margin-bottom:10px;display:block"></i>
+          <p style="font-size:13px;color:#9CA3AF;margin:0">Este cargo está siendo reclutado</p>
+        </div>
+      `;
+      grid.appendChild(card);
+      return;
+    }
 
     const kpiRows = jef.kpis.map(k => {
       const metaVal = getDirVal(k.metaKey, k.metaDefault);

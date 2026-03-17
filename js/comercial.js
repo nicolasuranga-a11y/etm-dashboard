@@ -4,11 +4,11 @@
    ============================================================ */
 
 const DEFAULT_CLIENTES = [
-  { id: 1, empresa: 'Cliente ejemplo A', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Prospecto',          dias: 1 },
-  { id: 2, empresa: 'Cliente ejemplo B', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Contactado',         dias: 1 },
-  { id: 3, empresa: 'Cliente ejemplo C', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Propuesta Enviada',  dias: 1 },
-  { id: 4, empresa: 'Cliente ejemplo D', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Negociación',        dias: 1 },
-  { id: 5, empresa: 'Cliente ejemplo E', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Cerrado',            dias: 1 },
+  { id: 1, empresa: 'Cliente ejemplo A', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Prospecto',          dias: 1 },
+  { id: 2, empresa: 'Cliente ejemplo B', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Contactado',         dias: 1 },
+  { id: 3, empresa: 'Cliente ejemplo C', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Propuesta Enviada',  dias: 1 },
+  { id: 4, empresa: 'Cliente ejemplo D', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Negociación',        dias: 1 },
+  { id: 5, empresa: 'Cliente ejemplo E', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Cerrado',            dias: 1 },
 ];
 
 const DEFAULT_HITOS = [
