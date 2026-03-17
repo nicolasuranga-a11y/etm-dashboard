@@ -35,9 +35,18 @@ const SIDEBAR_HTML = `
     <span class="nav-icon"><i class="fa-solid fa-network-wired"></i></span>
     <span class="nav-label">Ecosistemas</span>
   </a>
+  <div class="nav-section-label" style="margin-top:8px">Gestión</div>
+  <a href="/pages/director.html" class="nav-item" data-page="director">
+    <span class="nav-icon"><i class="fa-solid fa-crown"></i></span>
+    <span class="nav-label">Director Ejecutivo</span>
+  </a>
+  <a href="/pages/tareas.html" class="nav-item" data-page="tareas">
+    <span class="nav-icon"><i class="fa-solid fa-list-check"></i></span>
+    <span class="nav-label">Tareas &amp; Proyectos</span>
+  </a>
 </nav>
 <div class="sidebar-footer">
-  <div class="sidebar-version">ETM Dashboard v1.0 · 2025</div>
+  <div class="sidebar-version">ETM Dashboard v1.1 · 2025</div>
 </div>
 `;
 

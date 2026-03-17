@@ -5,27 +5,14 @@
 
 // ── Default Data ───────────────────────────────────────────
 const DEFAULT_GANTT = [
-  { id: 1, etapa: 'Producción General',     responsable: 'Carolina Achondo', inicio: '01/03/2025', termino: '30/11/2025', avance: 15, estado: 'En curso' },
-  { id: 2, etapa: 'Producción Audiovisual', responsable: 'Matías Correa',    inicio: '01/04/2025', termino: '15/11/2025', avance: 5,  estado: 'Pendiente' },
-  { id: 3, etapa: 'Comunicaciones',         responsable: 'Antonia Torres',   inicio: '01/04/2025', termino: '20/11/2025', avance: 10, estado: 'En curso' },
-  { id: 4, etapa: 'Comercial',              responsable: 'Ivonne Zuñiga',    inicio: '01/03/2025', termino: '30/11/2025', avance: 20, estado: 'En curso' },
-  { id: 5, etapa: 'Ecosistema',             responsable: 'Daniel López',     inicio: '01/05/2025', termino: '30/11/2025', avance: 0,  estado: 'Pendiente' },
-  { id: 6, etapa: 'Logística Venue',        responsable: 'Carolina Achondo', inicio: '01/06/2025', termino: '25/11/2025', avance: 0,  estado: 'Pendiente' },
-  { id: 7, etapa: 'Proveedores Técnicos',   responsable: 'Matías Correa',    inicio: '01/07/2025', termino: '20/11/2025', avance: 0,  estado: 'Pendiente' },
-  { id: 8, etapa: 'Marketing Digital',      responsable: 'Antonia Torres',   inicio: '01/04/2025', termino: '30/11/2025', avance: 8,  estado: 'En curso' },
-  { id: 9, etapa: 'Contenidos',             responsable: 'Daniel López',     inicio: '01/05/2025', termino: '25/11/2025', avance: 0,  estado: 'Pendiente' },
-  { id: 10, etapa: 'Cierre y Evaluación',   responsable: 'Ivonne Zuñiga',    inicio: '25/11/2025', termino: '15/12/2025', avance: 0,  estado: 'Pendiente' },
+  { id: 1, etapa: 'Etapa ejemplo 1', responsable: 'Carolina Achondo', inicio: '01/01/2025', termino: '30/06/2025', avance: 0, estado: 'Pendiente' },
+  { id: 2, etapa: 'Etapa ejemplo 2', responsable: 'Matías Correa',    inicio: '01/02/2025', termino: '30/09/2025', avance: 0, estado: 'Pendiente' },
+  { id: 3, etapa: 'Etapa ejemplo 3', responsable: 'Ivonne Zuñiga',    inicio: '01/03/2025', termino: '30/11/2025', avance: 0, estado: 'Pendiente' },
 ];
 
 const DEFAULT_PROVEEDORES = [
-  { id: 1, proveedor: 'TGA Producciones',      servicio: 'Producción General',  monto: 12000000, estado: 'Parcial',   cuotas: '2/3' },
-  { id: 2, proveedor: 'Parque Bicentenario',   servicio: 'Venue',               monto: 8500000,  estado: 'Pendiente', cuotas: '0/2' },
-  { id: 3, proveedor: 'Sonido y Luz Pro',      servicio: 'Equipamiento AV',     monto: 4200000,  estado: 'Pagado',    cuotas: '3/3' },
-  { id: 4, proveedor: 'Catering Eventos',      servicio: 'Alimentación',        monto: 3800000,  estado: 'Pendiente', cuotas: '0/2' },
-  { id: 5, proveedor: 'Impresos y Señalética', servicio: 'Material gráfico',    monto: 1200000,  estado: 'Pagado',    cuotas: '1/1' },
-  { id: 6, proveedor: 'Seguridad Privada',     servicio: 'Guardias',            monto: 2500000,  estado: 'Pendiente', cuotas: '0/2' },
-  { id: 7, proveedor: 'Transporte y Logística',servicio: 'Traslados',           monto: 1800000,  estado: 'Pendiente', cuotas: '0/1' },
-  { id: 8, proveedor: 'Fotografía y Video',    servicio: 'Registro',            monto: 3500000,  estado: 'Pendiente', cuotas: '0/2' },
+  { id: 1, proveedor: 'Proveedor ejemplo 1', servicio: 'Servicio ejemplo A', monto: 0, estado: 'Pendiente', cuotas: '0/1' },
+  { id: 2, proveedor: 'Proveedor ejemplo 2', servicio: 'Servicio ejemplo B', monto: 0, estado: 'Pendiente', cuotas: '0/1' },
 ];
 
 // ── KPIs ───────────────────────────────────────────────────

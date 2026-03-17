@@ -90,6 +90,24 @@
       gap: 5px;
       margin-top: 4px;
     }
+    .home-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 1024px) {
+      .home-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .home-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9CA3AF;
+      background: #F3F4F6;
+      border-radius: 6px;
+      padding: 3px 8px;
+      margin-top: 2px;
+    }
     .quick-stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -139,19 +157,19 @@
       <!-- Quick Stats -->
       <div class="quick-stats">
         <div class="quick-stat">
-          <div class="quick-stat-value" style="color:#7C3AED">8</div>
+          <div class="quick-stat-value" style="color:#7C3AED">—</div>
           <div class="quick-stat-label">Proveedores EtMday</div>
         </div>
         <div class="quick-stat">
-          <div class="quick-stat-value" style="color:#22C55E">$33M</div>
+          <div class="quick-stat-value" style="color:#22C55E">—</div>
           <div class="quick-stat-label">Fondos Conseguidos</div>
         </div>
         <div class="quick-stat">
-          <div class="quick-stat-value" style="color:#F59E0B">2</div>
+          <div class="quick-stat-value" style="color:#F59E0B">—</div>
           <div class="quick-stat-label">Sprints Activos</div>
         </div>
         <div class="quick-stat">
-          <div class="quick-stat-value" style="color:#3B82F6">5</div>
+          <div class="quick-stat-value" style="color:#3B82F6">—</div>
           <div class="quick-stat-label">Alianzas Privadas</div>
         </div>
       </div>
@@ -191,6 +209,25 @@
           </div>
           <div class="home-card-title">Contenidos y Ecosistemas</div>
           <div class="home-card-desc">Gestión de alianzas estratégicas, entidades públicas, proyectos del área y KPIs por integrante del equipo.</div>
+          <span class="home-card-link">Ir al dashboard <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="pages/director.html" class="home-card">
+          <div class="home-card-icon" style="background:#F5F3FF;color:#7C3AED">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <div class="home-card-title">Director Ejecutivo</div>
+          <div class="home-card-desc">Vista consolidada por área y jefatura. KPIs editables, métricas globales y notas privadas del director.</div>
+          <div class="home-card-badge"><i class="fa-solid fa-lock"></i> Acceso restringido</div>
+          <span class="home-card-link" style="margin-top:6px">Ir al dashboard <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="pages/tareas.html" class="home-card">
+          <div class="home-card-icon" style="background:#FFF7ED;color:#EA580C">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div class="home-card-title">Tareas &amp; Proyectos</div>
+          <div class="home-card-desc">Bucket list de tareas por área. Asigna responsables, plazos y estados. Filtra y busca en tiempo real.</div>
           <span class="home-card-link">Ir al dashboard <i class="fa-solid fa-arrow-right"></i></span>
         </a>
       </div>

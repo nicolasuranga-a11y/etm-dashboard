@@ -4,26 +4,19 @@
    ============================================================ */
 
 const DEFAULT_PARTNERS = [
-  { id: 1, org: 'Endeavor Chile',       tipo: 'Red Internacional',       estado: 'Activo',          resp: 'Daniel López',  desde: '2022', contacto: '01/03/2025', notas: 'Colaboración EtMday' },
-  { id: 2, org: 'ICARE',                tipo: 'Asociación Empresarial',  estado: 'Activo',          resp: 'Ivonne Zuñiga', desde: '2021', contacto: '15/02/2025', notas: 'Difusión eventos' },
-  { id: 3, org: 'StartupChile',         tipo: 'Aceleradora',             estado: 'Activo',          resp: 'Daniel López',  desde: '2023', contacto: '20/02/2025', notas: 'Pitch competitions' },
-  { id: 4, org: 'Wayra Chile',          tipo: 'Aceleradora Telco',       estado: 'En negociación',  resp: 'Ivonne Zuñiga', desde: '-',    contacto: '10/03/2025', notas: 'Propuesta enviada' },
-  { id: 5, org: 'ChileGlobal Ventures', tipo: 'Fondo inversión',         estado: 'Activo',          resp: 'Daniel López',  desde: '2022', contacto: '05/03/2025', notas: 'Red mentores' },
+  { id: 1, org: 'Partner ejemplo 1', tipo: 'Tipo por definir', estado: 'Activo',    resp: 'Daniel López',  desde: '-', contacto: '-', notas: 'Notas por completar' },
+  { id: 2, org: 'Partner ejemplo 2', tipo: 'Tipo por definir', estado: 'Pendiente', resp: 'Ivonne Zuñiga', desde: '-', contacto: '-', notas: 'Notas por completar' },
 ];
 
 const DEFAULT_PUBLICAS = [
-  { id: 1, org: 'CORFO',                area: 'Emprendimiento', estado: 'Activo',     resp: 'Ivonne Zuñiga',    programa: 'Relanzamiento ETM',     monto: 45000000, postulacion: 'Aprobado'    },
-  { id: 2, org: 'SERCOTEC',             area: 'Pymes',          estado: 'En proceso', resp: 'Daniel López',     programa: 'Talleres Regionales',   monto: 8000000,  postulacion: 'En revisión' },
-  { id: 3, org: 'Ministerio Economía',  area: 'Ecosistema',     estado: 'Activo',     resp: 'Ivonne Zuñiga',    programa: 'Mesa Emprendimiento',   monto: null,     postulacion: 'Participante' },
-  { id: 4, org: 'Municipalidad Vitacura',area: 'Eventos',       estado: 'Activo',     resp: 'Carolina Achondo', programa: 'EtMday Venue',          monto: null,     postulacion: 'Confirmado'  },
+  { id: 1, org: 'Entidad pública ejemplo 1', area: 'Área por definir', estado: 'Pendiente', resp: 'Ivonne Zuñiga', programa: 'Programa por definir', monto: null, postulacion: 'Pendiente' },
+  { id: 2, org: 'Entidad pública ejemplo 2', area: 'Área por definir', estado: 'Pendiente', resp: 'Daniel López',  programa: 'Programa por definir', monto: null, postulacion: 'Pendiente' },
 ];
 
 const DEFAULT_PROYECTOS = [
-  { id: 1, proyecto: 'EtMmeet 2025',        resp: 'Daniel López',  estado: 'En curso',    avance: 25, termino: '30/06/2025', desc: 'Plataforma matching emprendedores' },
-  { id: 2, proyecto: 'Red Alumni ETM',      resp: 'Ivonne Zuñiga', estado: 'En curso',    avance: 40, termino: '30/04/2025', desc: 'Comunidad ex participantes' },
-  { id: 3, proyecto: 'Mapa Ecosistema 2025',resp: 'Daniel López',  estado: 'Planificando',avance: 5,  termino: '31/08/2025', desc: 'Directorio startups Chile' },
-  { id: 4, proyecto: 'Podcast ETM',         resp: 'Antonia Torres',estado: 'Pausado',     avance: 60, termino: 'TBD',        desc: 'Serie entrevistas emprendedores' },
-  { id: 5, proyecto: 'Informe Impacto 2024',resp: 'Ivonne Zuñiga', estado: 'En curso',    avance: 70, termino: '31/03/2025', desc: 'Reporte anual de impacto' },
+  { id: 1, proyecto: 'Proyecto ejemplo 1', resp: 'Daniel López',  estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
+  { id: 2, proyecto: 'Proyecto ejemplo 2', resp: 'Ivonne Zuñiga', estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
+  { id: 3, proyecto: 'Proyecto ejemplo 3', resp: 'Daniel López',  estado: 'Pendiente', avance: 0, termino: 'TBD', desc: 'Descripción por completar' },
 ];
 
 const TEAM_KPIS = [
@@ -33,9 +26,9 @@ const TEAM_KPIS = [
     avatar: 'DL',
     color: '#7C3AED',
     kpis: [
-      { label: 'Alianzas nuevas',      actual: 3,  meta: 5,  unit: '' },
-      { label: 'Reuniones mensuales',  actual: 8,  meta: 10, unit: '' },
-      { label: 'Proyectos activos',    actual: 3,  meta: 4,  unit: '' },
+      { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 2', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 3', actual: 0, meta: 1, unit: '' },
     ]
   },
   {
@@ -44,9 +37,9 @@ const TEAM_KPIS = [
     avatar: 'IZ',
     color: '#2563EB',
     kpis: [
-      { label: 'Sponsors cerrados',    actual: 2,     meta: 8,      unit: '' },
-      { label: 'Fondos conseguidos',   actual: 33000000, meta: 100000000, unit: '$', isCLP: true },
-      { label: 'Reuniones directorio', actual: 2,     meta: 4,      unit: '' },
+      { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 2', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 3', actual: 0, meta: 1, unit: '' },
     ]
   },
   {
@@ -55,9 +48,9 @@ const TEAM_KPIS = [
     avatar: 'FA',
     color: '#059669',
     kpis: [
-      { label: 'Publicaciones',        actual: 12, meta: 20, unit: '' },
-      { label: 'Newsletter enviados',  actual: 1,  meta: 2,  unit: '' },
-      { label: 'EtMtuesday coord.',    actual: 2,  meta: 4,  unit: '' },
+      { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 2', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 3', actual: 0, meta: 1, unit: '' },
     ]
   },
   {
@@ -66,9 +59,9 @@ const TEAM_KPIS = [
     avatar: 'CT',
     color: '#D97706',
     kpis: [
-      { label: 'Partners contactados', actual: 5,  meta: 10, unit: '' },
-      { label: 'Propuestas enviadas',  actual: 3,  meta: 6,  unit: '' },
-      { label: 'Eventos coordinados',  actual: 1,  meta: 3,  unit: '' },
+      { label: 'KPI 1', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 2', actual: 0, meta: 1, unit: '' },
+      { label: 'KPI 3', actual: 0, meta: 1, unit: '' },
     ]
   }
 ];

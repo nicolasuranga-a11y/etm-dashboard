@@ -6,53 +6,24 @@
 const DEFAULT_SPRINTS = [
   {
     id: 1,
-    nombre: 'Sprint 1 — Lanzamiento Marzo',
-    inicio: '01/03/2025',
-    fin: '15/03/2025',
-    estado: 'Completado',
+    nombre: 'Sprint ejemplo 1',
+    inicio: '01/01/2025',
+    fin: '15/01/2025',
+    estado: 'Pendiente',
     tareas: [
-      { plataforma: 'Instagram', cantidad: 3, descripcion: 'Posts anuncio EtMday, quote emprendimiento, reel motivacional' },
-      { plataforma: 'LinkedIn',  cantidad: 2, descripcion: 'Artículo tendencias, publicación institucional' },
-      { plataforma: 'TikTok',    cantidad: 1, descripcion: 'Video corto tips emprendimiento' },
-    ]
-  },
-  {
-    id: 2,
-    nombre: 'Sprint 2 — EtMday 2025 Awareness',
-    inicio: '16/03/2025',
-    fin: '31/03/2025',
-    estado: 'En curso',
-    tareas: [
-      { plataforma: 'Instagram', cantidad: 4, descripcion: 'Countdown EtMday, speakers reveal, behind-the-scenes, stories interactivas' },
-      { plataforma: 'LinkedIn',  cantidad: 3, descripcion: 'Anuncio oficial, articulo impacto 2024, llamado a sponsors' },
-      { plataforma: 'Twitter',   cantidad: 2, descripcion: 'Thread EtMday, encuesta emprendimiento' },
-      { plataforma: 'TikTok',    cantidad: 1, descripcion: 'Preview evento' },
-    ]
-  },
-  {
-    id: 3,
-    nombre: 'Sprint 3 — Abril Contenido',
-    inicio: '01/04/2025',
-    fin: '15/04/2025',
-    estado: 'Planificado',
-    tareas: [
-      { plataforma: 'Instagram', cantidad: 4, descripcion: 'Por definir' },
-      { plataforma: 'LinkedIn',  cantidad: 2, descripcion: 'Por definir' },
-      { plataforma: 'TikTok',    cantidad: 2, descripcion: 'Por definir' },
+      { plataforma: 'Instagram', cantidad: 1, descripcion: 'Descripción por definir' },
+      { plataforma: 'LinkedIn',  cantidad: 1, descripcion: 'Descripción por definir' },
     ]
   },
 ];
 
 const DEFAULT_NEWSLETTER = [
-  { id: 1, edicion: '#48', fecha: '28/02/2025', asunto: 'Emprende en Marzo',       suscriptores: 2340, apertura: '32%', estado: 'Enviado'     },
-  { id: 2, edicion: '#49', fecha: '14/03/2025', asunto: 'EtMday 2025 se acerca',   suscriptores: 2340, apertura: '-',   estado: 'Programado'  },
-  { id: 3, edicion: '#50', fecha: '28/03/2025', asunto: '(sin definir)',            suscriptores: null, apertura: '-',   estado: 'Borrador'    },
+  { id: 1, edicion: '#1', fecha: '01/01/2025', asunto: 'Asunto por definir', suscriptores: null, apertura: '-', estado: 'Borrador' },
 ];
 
 const DEFAULT_ETMTUESDAY = [
-  { id: 1, fecha: '18/03/2025', tema: 'Financiamiento CORFO',           ponente: 'Rodrigo Vera', formato: 'Presencial', inscritos: 45, estado: 'Confirmado' },
-  { id: 2, fecha: '25/03/2025', tema: 'Marketing Digital para Pymes',   ponente: 'Ana Gómez',    formato: 'Online',     inscritos: 67, estado: 'Confirmado' },
-  { id: 3, fecha: '01/04/2025', tema: '(por definir)',                  ponente: '-',            formato: '-',          inscritos: 0,  estado: 'Planificando' },
+  { id: 1, fecha: '01/01/2025', tema: 'Tema por definir', ponente: '-', formato: 'Presencial', inscritos: 0, estado: 'Planificando' },
+  { id: 2, fecha: '08/01/2025', tema: 'Tema por definir', ponente: '-', formato: 'Online',     inscritos: 0, estado: 'Planificando' },
 ];
 
 const PLATFORM_ICONS = {

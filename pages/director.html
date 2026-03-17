@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Director Ejecutivo — ETM Dashboard 2025</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    /* ── Password Overlay ─────────────────────── */
+    #dir-password-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #1E1B4B 0%, #4C1D95 50%, #7C3AED 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+    .dir-login-card {
+      background: white;
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.35);
+    }
+    .dir-login-logo {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #7C3AED, #A78BFA);
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(124,58,237,0.35);
+    }
+    .dir-login-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+    .dir-login-sub {
+      font-size: 14px;
+      color: #6B7280;
+      margin-bottom: 28px;
+    }
+    .dir-login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEF3C7;
+      color: #D97706;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    .dir-password-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .dir-password-wrap input {
+      width: 100%;
+      padding: 13px 48px 13px 16px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 16px;
+      color: #111827;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      letter-spacing: 2px;
+    }
+    .dir-password-wrap input:focus {
+      border-color: #7C3AED;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+    }
+    .dir-password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9CA3AF;
+      font-size: 16px;
+      padding: 0;
+    }
+    .dir-login-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #7C3AED, #6D28D9);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .dir-login-btn:hover {
+      background: linear-gradient(135deg, #6D28D9, #5B21B6);
+      box-shadow: 0 6px 20px rgba(124,58,237,0.35);
+      transform: translateY(-1px);
+    }
+    .dir-password-error {
+      background: #FEF2F2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── Area Cards Grid ──────────────────────── */
+    .dir-area-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .dir-area-card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    @media (max-width: 768px) {
+      .dir-area-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Jefatura KPI Grid ────────────────────── */
+    .dir-jefaturas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 1100px) {
+      .dir-jefaturas-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .dir-jefaturas-grid { grid-template-columns: 1fr; }
+    }
+    .dir-kpi-card { margin-bottom: 0 !important; }
+
+    /* ── Notas ────────────────────────────────── */
+    .dir-notas-wrap {
+      position: relative;
+    }
+    .dir-notas-textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 14px 16px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 14px;
+      color: #111827;
+      font-family: inherit;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .dir-notas-textarea:focus {
+      border-color: #7C3AED;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.08);
+    }
+    .dir-notas-ts {
+      font-size: 12px;
+      color: #9CA3AF;
+      margin-top: 6px;
+    }
+
+    /* ── Section titles ───────────────────────── */
+    .dir-section-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .dir-section-title i {
+      color: #7C3AED;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar"></div>
+
+<!-- ═══════════════════ PASSWORD OVERLAY ═══════════════════ -->
+<div id="dir-password-overlay">
+  <div class="dir-login-card">
+    <div class="dir-login-logo">ETM</div>
+    <div class="dir-login-title">Acceso Restringido</div>
+    <div class="dir-login-sub">Dashboard Director Ejecutivo · ETM 2025</div>
+    <div class="dir-login-badge">
+      <i class="fa-solid fa-crown"></i>
+      Solo para el Director Ejecutivo
+    </div>
+    <div class="dir-password-wrap">
+      <input
+        type="password"
+        id="dir-password-input"
+        placeholder="Contraseña"
+        onkeydown="handlePasswordKey(event)"
+        autocomplete="current-password"
+      />
+      <button
+        class="dir-password-toggle"
+        type="button"
+        onclick="togglePwVisibility()"
+        id="dir-pw-toggle"
+        title="Mostrar/ocultar contraseña"
+      >
+        <i class="fa-regular fa-eye" id="dir-pw-eye"></i>
+      </button>
+    </div>
+    <button class="dir-login-btn" onclick="attemptLogin()">
+      <i class="fa-solid fa-lock-open"></i>
+      Ingresar al Dashboard
+    </button>
+    <div class="dir-password-error" id="dir-password-error">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      Contraseña incorrecta. Intenta nuevamente.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MAIN DASHBOARD ══════════════════════ -->
+<div id="main-content">
+  <header id="main-header"></header>
+
+  <div id="dir-dashboard" style="display:none">
+    <div id="content-area">
+
+      <!-- ── Sección 1: Métricas por Área ──────────────── -->
+      <div class="dir-section-title">
+        <i class="fa-solid fa-chart-pie"></i>
+        Métricas por Área
+      </div>
+      <div class="dir-area-grid" id="area-cards-grid">
+        <!-- Rendered by director.js -->
+      </div>
+
+      <!-- ── Sección 2: KPIs por Jefatura ──────────────── -->
+      <div class="dir-section-title">
+        <i class="fa-solid fa-users-gear"></i>
+        KPIs por Jefatura
+        <span style="font-size:12px;font-weight:400;color:#9CA3AF;margin-left:4px">— Haz clic en un valor para editarlo</span>
+      </div>
+      <div class="dir-jefaturas-grid" id="jefaturas-grid">
+        <!-- Rendered by director.js -->
+      </div>
+
+      <!-- ── Sección 3: Notas del Director ─────────────── -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title"><i class="fa-solid fa-note-sticky"></i> Notas del Director</div>
+            <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Privadas · Se guardan automáticamente en este navegador</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="dir-notas-wrap">
+            <textarea
+              id="dir-notas-textarea"
+              class="dir-notas-textarea"
+              placeholder="Escribe aquí tus notas privadas, decisiones pendientes, ideas o recordatorios…"
+            ></textarea>
+            <div class="dir-notas-ts" id="dir-notas-timestamp">Sin guardar aún</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="../js/shared.js"></script>
+<script>
+  // Toggle password visibility
+  function togglePwVisibility() {
+    const inp = document.getElementById('dir-password-input');
+    const eye = document.getElementById('dir-pw-eye');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      eye.className = 'fa-regular fa-eye-slash';
+    } else {
+      inp.type = 'password';
+      eye.className = 'fa-regular fa-eye';
+    }
+  }
+</script>
+<script src="../js/director.js"></script>
+</body>
+</html>

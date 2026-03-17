@@ -4,27 +4,19 @@
    ============================================================ */
 
 const DEFAULT_CLIENTES = [
-  { id: 1,  empresa: 'CORFO',           monto: 25000000, responsable: 'Ivonne Zuñiga',    etapa: 'Cerrado',            dias: 45 },
-  { id: 2,  empresa: 'EY',              monto: 8000000,  responsable: 'Ivonne Zuñiga',    etapa: 'Cerrado',            dias: 30 },
-  { id: 3,  empresa: 'ARAUCO',          monto: 20000000, responsable: 'Ivonne Zuñiga',    etapa: 'Negociación',        dias: 12 },
-  { id: 4,  empresa: 'BCI',             monto: 18000000, responsable: 'Ivonne Zuñiga',    etapa: 'Propuesta Enviada',  dias: 8  },
-  { id: 5,  empresa: 'Aguas Andinas',   monto: 7000000,  responsable: 'Carolina Achondo', etapa: 'Propuesta Enviada',  dias: 5  },
-  { id: 6,  empresa: 'CAP',             monto: 12000000, responsable: 'Ivonne Zuñiga',    etapa: 'Contactado',         dias: 20 },
-  { id: 7,  empresa: 'ICARE',           monto: 5000000,  responsable: 'Daniel López',     etapa: 'Contactado',         dias: 15 },
-  { id: 8,  empresa: 'LATAM Airlines',  monto: 15000000, responsable: 'Ivonne Zuñiga',    etapa: 'Prospecto',          dias: 3  },
-  { id: 9,  empresa: 'Banco Santander', monto: 8000000,  responsable: 'Ivonne Zuñiga',    etapa: 'Prospecto',          dias: 7  },
-  { id: 10, empresa: 'Colbún',          monto: 10000000, responsable: 'Ivonne Zuñiga',    etapa: 'Prospecto',          dias: 2  },
+  { id: 1, empresa: 'Cliente ejemplo A', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Prospecto',          dias: 1 },
+  { id: 2, empresa: 'Cliente ejemplo B', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Contactado',         dias: 1 },
+  { id: 3, empresa: 'Cliente ejemplo C', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Propuesta Enviada',  dias: 1 },
+  { id: 4, empresa: 'Cliente ejemplo D', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Negociación',        dias: 1 },
+  { id: 5, empresa: 'Cliente ejemplo E', monto: 0, responsable: 'Ivonne Zuñiga', etapa: 'Cerrado',            dias: 1 },
 ];
 
 const DEFAULT_HITOS = [
-  { id: 1, cliente: 'ARAUCO',       hito: 'Cuota 2/3',       monto: 6666666,  vencimiento: '30/04/2025', estado: 'Pendiente' },
-  { id: 2, cliente: 'BCI',          hito: 'Primer pago',     monto: 9000000,  vencimiento: '15/05/2025', estado: 'Pendiente' },
-  { id: 3, cliente: 'CORFO',        hito: 'Rendición Q1',    monto: 8333333,  vencimiento: '31/03/2025', estado: 'Vencido'   },
-  { id: 4, cliente: 'EY',           hito: 'Cuota final',     monto: 4000000,  vencimiento: '30/06/2025', estado: 'Pendiente' },
-  { id: 5, cliente: 'Aguas Andinas',hito: 'Primer pago',     monto: 3500000,  vencimiento: '15/05/2025', estado: 'Pendiente' },
+  { id: 1, cliente: 'Cliente ejemplo A', hito: 'Hito ejemplo 1', monto: 0, vencimiento: '01/06/2025', estado: 'Pendiente' },
+  { id: 2, cliente: 'Cliente ejemplo B', hito: 'Hito ejemplo 2', monto: 0, vencimiento: '01/09/2025', estado: 'Pendiente' },
 ];
 
-const META_ANUAL = 150000000;
+const META_ANUAL = 0;
 
 const STAGES = ['Prospecto', 'Contactado', 'Propuesta Enviada', 'Negociación', 'Cerrado'];
 
