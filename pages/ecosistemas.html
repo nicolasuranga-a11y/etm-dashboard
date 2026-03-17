@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ecosistemas — ETM Dashboard 2025</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar"></div>
+
+<!-- Main Content -->
+<div id="main-content">
+  <header id="main-header"></header>
+
+  <div id="content-area">
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-purple"><i class="fa-solid fa-handshake-simple"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Alianzas Activas</div>
+          <div class="kpi-value" id="kpi-alianzas">—</div>
+          <div class="kpi-sub">Partners + entidades públicas</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-blue"><i class="fa-solid fa-diagram-project"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Proyectos en Curso</div>
+          <div class="kpi-value" id="kpi-proyectos">—</div>
+          <div class="kpi-sub">Activos este trimestre</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-green"><i class="fa-solid fa-globe"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Partners Estratégicos</div>
+          <div class="kpi-value" id="kpi-partners">—</div>
+          <div class="kpi-sub">Sector privado</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-indigo"><i class="fa-solid fa-landmark"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Entidades Públicas</div>
+          <div class="kpi-value" id="kpi-entidades">—</div>
+          <div class="kpi-sub">Gobierno y municipios</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALIANZAS CON TABS -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-network-wired"></i> Gestión de Alianzas</div>
+      </div>
+      <div class="panel-body">
+
+        <!-- Tabs -->
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="tab-partners" onclick="switchTab('tab-partners')">
+            <i class="fa-solid fa-building-columns" style="margin-right:6px"></i>Partners Privados
+          </button>
+          <button class="tab-btn" data-tab="tab-publicas" onclick="switchTab('tab-publicas')">
+            <i class="fa-solid fa-landmark" style="margin-right:6px"></i>Entidades Públicas
+          </button>
+        </div>
+
+        <!-- Tab: Partners Privados -->
+        <div class="tab-pane active" id="tab-partners">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+            <button class="btn btn-primary" onclick="openAddPartner()">
+              <i class="fa-solid fa-plus"></i> Agregar Partner
+            </button>
+          </div>
+          <div class="etm-table-wrap">
+            <table class="etm-table" id="partners-table">
+              <thead>
+                <tr>
+                  <th>Organización</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th>Responsable</th>
+                  <th>Desde</th>
+                  <th>Último Contacto</th>
+                  <th>Notas</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="8" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab: Entidades Públicas -->
+        <div class="tab-pane" id="tab-publicas">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+            <button class="btn btn-primary" onclick="openAddPublica()">
+              <i class="fa-solid fa-plus"></i> Agregar Entidad
+            </button>
+          </div>
+          <div class="etm-table-wrap">
+            <table class="etm-table" id="publicas-table">
+              <thead>
+                <tr>
+                  <th>Organización</th>
+                  <th>Área</th>
+                  <th>Estado</th>
+                  <th>Responsable</th>
+                  <th>Programa</th>
+                  <th>Monto</th>
+                  <th>Postulación</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="8" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PROYECTOS DEL ÁREA -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title"><i class="fa-solid fa-clipboard-list"></i> Proyectos del Área</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Iniciativas activas de Contenidos y Ecosistemas</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddProyecto()">
+          <i class="fa-solid fa-plus"></i> Agregar Proyecto
+        </button>
+      </div>
+      <div class="panel-body-flush">
+        <div class="etm-table-wrap">
+          <table class="etm-table" id="proyectos-table">
+            <thead>
+              <tr>
+                <th>Proyecto</th>
+                <th>Responsable</th>
+                <th>Estado</th>
+                <th style="min-width:160px">Avance</th>
+                <th>Fecha Término</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs POR INTEGRANTE -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-users"></i> KPIs por Integrante del Equipo</div>
+      </div>
+      <div class="panel-body">
+        <div id="team-kpis">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL: Partner ===== -->
+<div class="modal-overlay" id="partner-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="partner-modal-title">Agregar Partner Privado</span>
+      <button class="modal-close" onclick="closeModal('partner-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="partner-form" onsubmit="return false">
+        <input type="hidden" id="partner-edit-id" />
+        <div class="form-group">
+          <label class="form-label">Organización <span style="color:red">*</span></label>
+          <input type="text" id="partner-org" class="form-control" placeholder="Ej: Endeavor Chile" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <input type="text" id="partner-tipo" class="form-control" placeholder="Ej: Aceleradora" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select id="partner-estado" class="form-control form-select">
+              <option>Activo</option>
+              <option>En negociación</option>
+              <option>Pausado</option>
+              <option>Inactivo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Responsable ETM</label>
+            <select id="partner-resp" class="form-control form-select">
+              <option>Daniel López</option>
+              <option>Ivonne Zuñiga</option>
+              <option>Carolina Achondo</option>
+              <option>Catalina Taulis</option>
+              <option>Francisco Álvarez</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alianza desde (año)</label>
+            <input type="text" id="partner-desde" class="form-control" placeholder="Ej: 2022" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Último Contacto</label>
+            <input type="text" id="partner-contacto" class="form-control" placeholder="DD/MM/YYYY" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notas</label>
+            <input type="text" id="partner-notas" class="form-control" placeholder="Observaciones..." />
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('partner-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePartner()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Entidad Pública ===== -->
+<div class="modal-overlay" id="publica-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="publica-modal-title">Agregar Entidad Pública</span>
+      <button class="modal-close" onclick="closeModal('publica-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="publica-form" onsubmit="return false">
+        <input type="hidden" id="publica-edit-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Organización <span style="color:red">*</span></label>
+            <input type="text" id="publica-org" class="form-control" placeholder="Ej: SERCOTEC" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Área</label>
+            <input type="text" id="publica-area" class="form-control" placeholder="Ej: Pymes" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select id="publica-estado" class="form-control form-select">
+              <option>Activo</option>
+              <option>En proceso</option>
+              <option>Pausado</option>
+              <option>Inactivo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Responsable ETM</label>
+            <select id="publica-resp" class="form-control form-select">
+              <option>Ivonne Zuñiga</option>
+              <option>Daniel López</option>
+              <option>Carolina Achondo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Programa / Proyecto</label>
+          <input type="text" id="publica-programa" class="form-control" placeholder="Ej: Relanzamiento ETM" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Monto (CLP)</label>
+            <input type="number" id="publica-monto" class="form-control" placeholder="Opcional" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado Postulación</label>
+            <select id="publica-postulacion" class="form-control form-select">
+              <option>Aprobado</option>
+              <option>En revisión</option>
+              <option>Participante</option>
+              <option>Confirmado</option>
+              <option>Pendiente</option>
+              <option>Rechazado</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('publica-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePublica()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Proyecto ===== -->
+<div class="modal-overlay" id="proyecto-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="proyecto-modal-title">Agregar Proyecto</span>
+      <button class="modal-close" onclick="closeModal('proyecto-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="proyecto-form" onsubmit="return false">
+        <input type="hidden" id="proyecto-edit-id" />
+        <div class="form-group">
+          <label class="form-label">Nombre del Proyecto <span style="color:red">*</span></label>
+          <input type="text" id="proyecto-nombre" class="form-control" placeholder="Ej: EtMmeet 2025" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Responsable</label>
+            <select id="proyecto-resp" class="form-control form-select">
+              <option>Daniel López</option>
+              <option>Ivonne Zuñiga</option>
+              <option>Antonia Torres</option>
+              <option>Francisco Álvarez</option>
+              <option>Catalina Taulis</option>
+              <option>Carolina Achondo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select id="proyecto-estado" class="form-control form-select">
+              <option>Planificando</option>
+              <option>En curso</option>
+              <option>Pausado</option>
+              <option>Completado</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Avance (%)</label>
+            <input type="number" id="proyecto-avance" class="form-control" placeholder="0" min="0" max="100" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha Término</label>
+            <input type="text" id="proyecto-termino" class="form-control" placeholder="DD/MM/YYYY o TBD" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción</label>
+          <input type="text" id="proyecto-desc" class="form-control" placeholder="Breve descripción del proyecto" />
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('proyecto-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProyecto()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="../js/shared.js"></script>
+<script src="../js/ecosistemas.js"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM Comercial — ETM Dashboard 2025</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar"></div>
+
+<!-- Main Content -->
+<div id="main-content">
+  <header id="main-header"></header>
+
+  <div id="content-area">
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-purple"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Total Pipeline</div>
+          <div class="kpi-value" id="kpi-pipeline" style="font-size:17px">—</div>
+          <div class="kpi-sub">Suma oportunidades activas</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-blue"><i class="fa-solid fa-building"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Clientes Activos</div>
+          <div class="kpi-value" id="kpi-activos">—</div>
+          <div class="kpi-sub">En pipeline</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-indigo"><i class="fa-solid fa-bullseye"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Meta Anual</div>
+          <div class="kpi-value" id="kpi-meta" style="font-size:17px">—</div>
+          <div class="kpi-sub">Objetivo 2025</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-green"><i class="fa-solid fa-percent"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">% Cumplimiento</div>
+          <div class="kpi-value" id="kpi-pct">—</div>
+          <div class="kpi-sub">Sobre meta anual</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KANBAN PIPELINE -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title"><i class="fa-solid fa-table-columns"></i> Pipeline Comercial — Kanban</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Sponsors y clientes por etapa de negociación</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddCliente()">
+          <i class="fa-solid fa-plus"></i> Agregar Cliente
+        </button>
+      </div>
+      <div class="panel-body">
+        <div class="kanban-container" id="kanban-board">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TWO COLUMNS: Chart + Hitos -->
+    <div class="grid-2">
+
+      <!-- Donut Chart -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fa-solid fa-chart-pie"></i> Distribución por Etapa</div>
+        </div>
+        <div class="panel-body">
+          <div class="chart-container" style="height:240px">
+            <canvas id="pipeline-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hitos de Pago -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title"><i class="fa-solid fa-calendar-check"></i> Hitos de Pago Próximos</div>
+            <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Vencimientos y cuotas pendientes</div>
+          </div>
+          <button class="btn btn-primary" onclick="openAddHito()">
+            <i class="fa-solid fa-plus"></i> Agregar
+          </button>
+        </div>
+        <div class="panel-body-flush">
+          <div class="etm-table-wrap">
+            <table class="etm-table" id="hitos-table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Hito</th>
+                  <th>Monto</th>
+                  <th>Vencimiento</th>
+                  <th>Estado</th>
+                  <th>Acc.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="6" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL: Cliente ===== -->
+<div class="modal-overlay" id="cliente-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="cliente-modal-title">Agregar Cliente / Sponsor</span>
+      <button class="modal-close" onclick="closeModal('cliente-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="cliente-form" onsubmit="return false">
+        <input type="hidden" id="cliente-edit-id" />
+        <div class="form-group">
+          <label class="form-label">Empresa <span style="color:red">*</span></label>
+          <input type="text" id="cliente-empresa" class="form-control" placeholder="Ej: ARAUCO" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Monto Propuesto (CLP)</label>
+            <input type="number" id="cliente-monto" class="form-control" placeholder="20000000" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Días en Etapa</label>
+            <input type="number" id="cliente-dias" class="form-control" placeholder="0" min="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Responsable</label>
+          <select id="cliente-responsable" class="form-control form-select">
+            <option>Ivonne Zuñiga</option>
+            <option>Carolina Achondo</option>
+            <option>Daniel López</option>
+            <option>Catalina Taulis</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Etapa del Pipeline</label>
+          <select id="cliente-etapa" class="form-control form-select">
+            <option>Prospecto</option>
+            <option>Contactado</option>
+            <option>Propuesta Enviada</option>
+            <option>Negociación</option>
+            <option>Cerrado</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('cliente-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveCliente()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Hito ===== -->
+<div class="modal-overlay" id="hito-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="hito-modal-title">Agregar Hito de Pago</span>
+      <button class="modal-close" onclick="closeModal('hito-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="hito-form" onsubmit="return false">
+        <input type="hidden" id="hito-edit-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Cliente <span style="color:red">*</span></label>
+            <input type="text" id="hito-cliente" class="form-control" placeholder="Ej: ARAUCO" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hito / Descripción <span style="color:red">*</span></label>
+            <input type="text" id="hito-hito" class="form-control" placeholder="Ej: Cuota 2/3" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Monto (CLP)</label>
+            <input type="number" id="hito-monto" class="form-control" placeholder="6666666" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha Vencimiento</label>
+            <input type="text" id="hito-vencimiento" class="form-control" placeholder="DD/MM/YYYY" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select id="hito-estado" class="form-control form-select">
+            <option>Pendiente</option>
+            <option>Vencido</option>
+            <option>Pagado</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('hito-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveHito()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="../js/shared.js"></script>
+<script src="../js/comercial.js"></script>
+</body>
+</html>

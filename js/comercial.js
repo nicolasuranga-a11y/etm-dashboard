@@ -1,0 +1,294 @@
+/* ============================================================
+   ETM Dashboard — comercial.js
+   CRM: Pipeline Kanban + Hitos de Pago + Chart
+   ============================================================ */
+
+const DEFAULT_CLIENTES = [
+  { id: 1,  empresa: 'CORFO',           monto: 25000000, responsable: 'Ivonne Zuñiga',    etapa: 'Cerrado',            dias: 45 },
+  { id: 2,  empresa: 'EY',              monto: 8000000,  responsable: 'Ivonne Zuñiga',    etapa: 'Cerrado',            dias: 30 },
+  { id: 3,  empresa: 'ARAUCO',          monto: 20000000, responsable: 'Ivonne Zuñiga',    etapa: 'Negociación',        dias: 12 },
+  { id: 4,  empresa: 'BCI',             monto: 18000000, responsable: 'Ivonne Zuñiga',    etapa: 'Propuesta Enviada',  dias: 8  },
+  { id: 5,  empresa: 'Aguas Andinas',   monto: 7000000,  responsable: 'Carolina Achondo', etapa: 'Propuesta Enviada',  dias: 5  },
+  { id: 6,  empresa: 'CAP',             monto: 12000000, responsable: 'Ivonne Zuñiga',    etapa: 'Contactado',         dias: 20 },
+  { id: 7,  empresa: 'ICARE',           monto: 5000000,  responsable: 'Daniel López',     etapa: 'Contactado',         dias: 15 },
+  { id: 8,  empresa: 'LATAM Airlines',  monto: 15000000, responsable: 'Ivonne Zuñiga',    etapa: 'Prospecto',          dias: 3  },
+  { id: 9,  empresa: 'Banco Santander', monto: 8000000,  responsable: 'Ivonne Zuñiga',    etapa: 'Prospecto',          dias: 7  },
+  { id: 10, empresa: 'Colbún',          monto: 10000000, responsable: 'Ivonne Zuñiga',    etapa: 'Prospecto',          dias: 2  },
+];
+
+const DEFAULT_HITOS = [
+  { id: 1, cliente: 'ARAUCO',       hito: 'Cuota 2/3',       monto: 6666666,  vencimiento: '30/04/2025', estado: 'Pendiente' },
+  { id: 2, cliente: 'BCI',          hito: 'Primer pago',     monto: 9000000,  vencimiento: '15/05/2025', estado: 'Pendiente' },
+  { id: 3, cliente: 'CORFO',        hito: 'Rendición Q1',    monto: 8333333,  vencimiento: '31/03/2025', estado: 'Vencido'   },
+  { id: 4, cliente: 'EY',           hito: 'Cuota final',     monto: 4000000,  vencimiento: '30/06/2025', estado: 'Pendiente' },
+  { id: 5, cliente: 'Aguas Andinas',hito: 'Primer pago',     monto: 3500000,  vencimiento: '15/05/2025', estado: 'Pendiente' },
+];
+
+const META_ANUAL = 150000000;
+
+const STAGES = ['Prospecto', 'Contactado', 'Propuesta Enviada', 'Negociación', 'Cerrado'];
+
+// ── KPIs ───────────────────────────────────────────────────
+function renderKPIsComercial(clientes) {
+  const pipeline = clientes.reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
+  const activos = clientes.filter(c => c.etapa !== 'Perdido').length;
+  const cerrado = clientes.filter(c => c.etapa === 'Cerrado').reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
+  const pct = Math.round((cerrado / META_ANUAL) * 100);
+
+  document.getElementById('kpi-pipeline').textContent = formatCLP(pipeline);
+  document.getElementById('kpi-activos').textContent = activos;
+  document.getElementById('kpi-meta').textContent = formatCLP(META_ANUAL);
+  document.getElementById('kpi-pct').textContent = pct + '%';
+}
+
+// ── Kanban Board ───────────────────────────────────────────
+const STAGE_STYLES = {
+  'Prospecto':         { header: 'kanban-prospecto',   icon: 'fa-circle-dot' },
+  'Contactado':        { header: 'kanban-contactado',  icon: 'fa-phone' },
+  'Propuesta Enviada': { header: 'kanban-propuesta',   icon: 'fa-file-lines' },
+  'Negociación':       { header: 'kanban-negociacion', icon: 'fa-handshake' },
+  'Cerrado':           { header: 'kanban-cerrado',     icon: 'fa-circle-check' },
+};
+
+function renderKanban(clientes) {
+  const board = document.getElementById('kanban-board');
+  if (!board) return;
+  board.innerHTML = '';
+
+  STAGES.forEach(stage => {
+    const items = clientes.filter(c => c.etapa === stage);
+    const total = items.reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
+    const style = STAGE_STYLES[stage] || { header: 'kanban-prospecto', icon: 'fa-circle' };
+
+    const col = document.createElement('div');
+    col.className = 'kanban-col';
+    col.innerHTML = `
+      <div class="kanban-col-header ${style.header}">
+        <span><i class="fa-solid ${style.icon}" style="margin-right:6px"></i>${stage}</span>
+        <span style="font-size:11px;opacity:0.8">${items.length} · ${formatCLP(total)}</span>
+      </div>
+      <div class="kanban-col-body" id="kanban-col-${stage.replace(/\s/g,'-')}">
+        ${items.length === 0 ? '<div style="text-align:center;padding:20px;font-size:12px;color:#9CA3AF">Sin registros</div>' : ''}
+      </div>
+    `;
+    board.appendChild(col);
+
+    const colBody = col.querySelector('.kanban-col-body');
+    items.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'kanban-card';
+      card.innerHTML = `
+        <div class="kanban-card-company">${escapeHtml(c.empresa)}</div>
+        <div class="kanban-card-contact"><i class="fa-solid fa-user" style="margin-right:4px"></i>${escapeHtml(c.responsable)}</div>
+        <div class="kanban-card-amount">${formatCLP(c.monto)}</div>
+        <div class="kanban-card-footer">
+          <span class="kanban-days"><i class="fa-regular fa-clock"></i> ${c.dias} días</span>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-ghost btn-sm btn-icon" title="Editar" onclick="openEditCliente(${c.id})"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-danger btn-sm btn-icon" title="Eliminar" onclick="deleteCliente(${c.id})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `;
+      colBody.appendChild(card);
+    });
+  });
+}
+
+// ── Hitos Table ────────────────────────────────────────────
+function renderHitos(hitos) {
+  const tbody = document.querySelector('#hitos-table tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  hitos.forEach(h => {
+    const tr = document.createElement('tr');
+    if (h.estado === 'Vencido') tr.classList.add('vencido-row');
+    tr.innerHTML = `
+      <td style="font-weight:600">${escapeHtml(h.cliente)}</td>
+      <td>${escapeHtml(h.hito)}</td>
+      <td style="font-weight:700;color:var(--etm-primary)">${formatCLP(h.monto)}</td>
+      <td style="white-space:nowrap">${escapeHtml(h.vencimiento)}</td>
+      <td>${statusBadge(h.estado)}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-sm btn-icon" title="Editar" onclick="openEditHito(${h.id})"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-danger btn-sm btn-icon" title="Eliminar" onclick="deleteHito(${h.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  makeSortable('hitos-table');
+}
+
+// ── Donut Chart ────────────────────────────────────────────
+let chartInstance = null;
+function renderChart(clientes) {
+  const ctx = document.getElementById('pipeline-chart');
+  if (!ctx) return;
+  const counts = STAGES.map(s => clientes.filter(c => c.etapa === s).length);
+  const amounts = STAGES.map(s => clientes.filter(c => c.etapa === s).reduce((a, c) => a + (parseInt(c.monto) || 0), 0));
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: STAGES,
+      datasets: [{
+        data: amounts,
+        backgroundColor: ['#94A3B8','#3B82F6','#7C3AED','#F59E0B','#22C55E'],
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 11 }, padding: 12 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${formatCLP(ctx.raw)}`
+          }
+        }
+      },
+      cutout: '62%',
+    }
+  });
+}
+
+// ── CRUD Clientes ──────────────────────────────────────────
+function openAddCliente() {
+  document.getElementById('cliente-modal-title').textContent = 'Agregar Cliente / Sponsor';
+  document.getElementById('cliente-form').reset();
+  document.getElementById('cliente-edit-id').value = '';
+  openModal('cliente-modal');
+}
+
+function openEditCliente(id) {
+  const data = LS.get('clientes', DEFAULT_CLIENTES);
+  const row = data.find(r => String(r.id) === String(id));
+  if (!row) return;
+  document.getElementById('cliente-modal-title').textContent = 'Editar Cliente';
+  document.getElementById('cliente-edit-id').value = row.id;
+  document.getElementById('cliente-empresa').value = row.empresa;
+  document.getElementById('cliente-monto').value = row.monto;
+  document.getElementById('cliente-responsable').value = row.responsable;
+  document.getElementById('cliente-etapa').value = row.etapa;
+  document.getElementById('cliente-dias').value = row.dias;
+  openModal('cliente-modal');
+}
+
+function saveCliente() {
+  const id = document.getElementById('cliente-edit-id').value;
+  const item = {
+    empresa: document.getElementById('cliente-empresa').value.trim(),
+    monto: parseCLP(document.getElementById('cliente-monto').value),
+    responsable: document.getElementById('cliente-responsable').value.trim(),
+    etapa: document.getElementById('cliente-etapa').value,
+    dias: parseInt(document.getElementById('cliente-dias').value) || 0,
+  };
+  if (!item.empresa) { showToast('Completa los campos requeridos', 'error'); return; }
+  let data = LS.get('clientes', DEFAULT_CLIENTES);
+  if (id) {
+    data = data.map(r => String(r.id) === String(id) ? { ...r, ...item } : r);
+    LS.set('clientes', data);
+    showToast('Cliente actualizado correctamente');
+  } else {
+    item.id = genId();
+    data.push(item);
+    LS.set('clientes', data);
+    showToast('Cliente agregado correctamente');
+  }
+  closeModal('cliente-modal');
+  refreshComercial();
+}
+
+function deleteCliente(id) {
+  confirmAction('¿Eliminar este cliente del pipeline?', () => {
+    LS.remove('clientes', id);
+    refreshComercial();
+    showToast('Cliente eliminado', 'info');
+  });
+}
+
+// ── CRUD Hitos ─────────────────────────────────────────────
+function openAddHito() {
+  document.getElementById('hito-modal-title').textContent = 'Agregar Hito de Pago';
+  document.getElementById('hito-form').reset();
+  document.getElementById('hito-edit-id').value = '';
+  openModal('hito-modal');
+}
+
+function openEditHito(id) {
+  const data = LS.get('hitos', DEFAULT_HITOS);
+  const row = data.find(r => String(r.id) === String(id));
+  if (!row) return;
+  document.getElementById('hito-modal-title').textContent = 'Editar Hito';
+  document.getElementById('hito-edit-id').value = row.id;
+  document.getElementById('hito-cliente').value = row.cliente;
+  document.getElementById('hito-hito').value = row.hito;
+  document.getElementById('hito-monto').value = row.monto;
+  document.getElementById('hito-vencimiento').value = row.vencimiento;
+  document.getElementById('hito-estado').value = row.estado;
+  openModal('hito-modal');
+}
+
+function saveHito() {
+  const id = document.getElementById('hito-edit-id').value;
+  const item = {
+    cliente: document.getElementById('hito-cliente').value.trim(),
+    hito: document.getElementById('hito-hito').value.trim(),
+    monto: parseCLP(document.getElementById('hito-monto').value),
+    vencimiento: document.getElementById('hito-vencimiento').value.trim(),
+    estado: document.getElementById('hito-estado').value,
+  };
+  if (!item.cliente || !item.hito) { showToast('Completa los campos requeridos', 'error'); return; }
+  let data = LS.get('hitos', DEFAULT_HITOS);
+  if (id) {
+    data = data.map(r => String(r.id) === String(id) ? { ...r, ...item } : r);
+    LS.set('hitos', data);
+    showToast('Hito actualizado');
+  } else {
+    item.id = genId();
+    data.push(item);
+    LS.set('hitos', data);
+    showToast('Hito agregado');
+  }
+  closeModal('hito-modal');
+  renderHitos(LS.get('hitos', DEFAULT_HITOS));
+}
+
+function deleteHito(id) {
+  confirmAction('¿Eliminar este hito de pago?', () => {
+    LS.remove('hitos', id);
+    renderHitos(LS.get('hitos', DEFAULT_HITOS));
+    showToast('Hito eliminado', 'info');
+  });
+}
+
+// ── Refresh All ────────────────────────────────────────────
+function refreshComercial() {
+  const clientes = LS.get('clientes', DEFAULT_CLIENTES);
+  renderKPIsComercial(clientes);
+  renderKanban(clientes);
+  renderChart(clientes);
+}
+
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderSidebar('comercial');
+  renderHeader('CRM Comercial', 'Sponsors, clientes y pipeline de ventas');
+
+  if (!localStorage.getItem('etm_clientes')) LS.set('clientes', DEFAULT_CLIENTES);
+  if (!localStorage.getItem('etm_hitos')) LS.set('hitos', DEFAULT_HITOS);
+
+  refreshComercial();
+  renderHitos(LS.get('hitos', DEFAULT_HITOS));
+});

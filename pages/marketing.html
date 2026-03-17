@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketing — ETM Dashboard 2025</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar"></div>
+
+<!-- Main Content -->
+<div id="main-content">
+  <header id="main-header"></header>
+
+  <div id="content-area">
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-purple"><i class="fa-solid fa-rocket"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Sprints Activos</div>
+          <div class="kpi-value" id="kpi-sprints">—</div>
+          <div class="kpi-sub">En ejecución</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-blue"><i class="fa-solid fa-image"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Publicaciones Este Mes</div>
+          <div class="kpi-value" id="kpi-publicaciones">—</div>
+          <div class="kpi-sub">Sprints completados/activos</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-teal"><i class="fa-solid fa-envelope-open-text"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Suscriptores Newsletter</div>
+          <div class="kpi-value" id="kpi-suscriptores">—</div>
+          <div class="kpi-sub">Base activa</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-amber"><i class="fa-solid fa-calendar-day"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Próximo EtMtuesday</div>
+          <div class="kpi-value" id="kpi-proximo-etmt" style="font-size:18px">—</div>
+          <div class="kpi-sub">Fecha próximo evento</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPRINTS DE CONTENIDO -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title"><i class="fa-solid fa-rocket"></i> Sprints de Contenido</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Planificación de publicaciones por plataforma y período</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddSprint()">
+          <i class="fa-solid fa-plus"></i> Nuevo Sprint
+        </button>
+      </div>
+      <div class="panel-body">
+        <div id="sprints-container">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title"><i class="fa-solid fa-envelope"></i> Newsletter ETM</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Historial y programación de envíos</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddNewsletter()">
+          <i class="fa-solid fa-plus"></i> Agregar Edición
+        </button>
+      </div>
+      <div class="panel-body-flush">
+        <div class="etm-table-wrap">
+          <table class="etm-table" id="newsletter-table">
+            <thead>
+              <tr>
+                <th>Edición</th>
+                <th>Fecha Envío</th>
+                <th>Asunto</th>
+                <th>Suscriptores</th>
+                <th>Tasa Apertura</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETMTUESDAY -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title"><i class="fa-solid fa-chalkboard-user"></i> EtMtuesday</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Eventos semanales de conocimiento para emprendedores</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddEtMtuesday()">
+          <i class="fa-solid fa-plus"></i> Agregar EtMtuesday
+        </button>
+      </div>
+      <div class="panel-body-flush">
+        <div class="etm-table-wrap">
+          <table class="etm-table" id="etmtuesday-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tema</th>
+                <th>Ponente</th>
+                <th>Formato</th>
+                <th style="text-align:center">Inscritos</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL: Sprint ===== -->
+<div class="modal-overlay" id="sprint-modal">
+  <div class="modal-box" style="max-width:620px">
+    <div class="modal-header">
+      <span class="modal-title" id="sprint-modal-title">Nuevo Sprint</span>
+      <button class="modal-close" onclick="closeModal('sprint-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="sprint-form" onsubmit="return false">
+        <input type="hidden" id="sprint-edit-id" />
+        <div class="form-group">
+          <label class="form-label">Nombre del Sprint <span style="color:red">*</span></label>
+          <input type="text" id="sprint-nombre" class="form-control" placeholder="Ej: Sprint 4 — Lanzamiento EtMday" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fecha Inicio</label>
+            <input type="text" id="sprint-inicio" class="form-control" placeholder="DD/MM/YYYY" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha Fin</label>
+            <input type="text" id="sprint-fin" class="form-control" placeholder="DD/MM/YYYY" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select id="sprint-estado" class="form-control form-select">
+            <option>Planificado</option>
+            <option>En curso</option>
+            <option>Completado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+            Tareas por Plataforma
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addTareaRow()">
+              <i class="fa-solid fa-plus"></i> Agregar canal
+            </button>
+          </label>
+          <div id="sprint-tareas-list"></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('sprint-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSprint()"><i class="fa-solid fa-floppy-disk"></i> Guardar Sprint</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Newsletter ===== -->
+<div class="modal-overlay" id="nl-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="nl-modal-title">Agregar Newsletter</span>
+      <button class="modal-close" onclick="closeModal('nl-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="nl-form" onsubmit="return false">
+        <input type="hidden" id="nl-edit-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Edición <span style="color:red">*</span></label>
+            <input type="text" id="nl-edicion" class="form-control" placeholder="Ej: #51" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha Envío</label>
+            <input type="text" id="nl-fecha" class="form-control" placeholder="DD/MM/YYYY" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Asunto del Email</label>
+          <input type="text" id="nl-asunto" class="form-control" placeholder="Ej: ETM te espera este noviembre" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Suscriptores</label>
+            <input type="number" id="nl-suscriptores" class="form-control" placeholder="2340" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tasa Apertura</label>
+            <input type="text" id="nl-apertura" class="form-control" placeholder="Ej: 35%" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select id="nl-estado" class="form-control form-select">
+            <option>Borrador</option>
+            <option>Programado</option>
+            <option>Enviado</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('nl-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNewsletter()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: EtMtuesday ===== -->
+<div class="modal-overlay" id="etmt-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="etmt-modal-title">Agregar EtMtuesday</span>
+      <button class="modal-close" onclick="closeModal('etmt-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="etmt-form" onsubmit="return false">
+        <input type="hidden" id="etmt-edit-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fecha <span style="color:red">*</span></label>
+            <input type="text" id="etmt-fecha" class="form-control" placeholder="DD/MM/YYYY" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Formato</label>
+            <select id="etmt-formato" class="form-control form-select">
+              <option>Online</option>
+              <option>Presencial</option>
+              <option>Híbrido</option>
+              <option>-</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tema <span style="color:red">*</span></label>
+          <input type="text" id="etmt-tema" class="form-control" placeholder="Ej: Innovación y Financiamiento" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ponente</label>
+            <input type="text" id="etmt-ponente" class="form-control" placeholder="Nombre ponente" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inscritos</label>
+            <input type="number" id="etmt-inscritos" class="form-control" placeholder="0" min="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select id="etmt-estado" class="form-control form-select">
+            <option>Planificando</option>
+            <option>Confirmado</option>
+            <option>En curso</option>
+            <option>Completado</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('etmt-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEtMtuesday()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="../js/shared.js"></script>
+<script src="../js/marketing.js"></script>
+</body>
+</html>
