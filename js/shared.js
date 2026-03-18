@@ -44,6 +44,10 @@ const SIDEBAR_HTML = `
     <span class="nav-icon"><i class="fa-solid fa-list-check"></i></span>
     <span class="nav-label">Tareas &amp; Proyectos</span>
   </a>
+  <a href="/pages/configuracion.html" class="nav-item" data-page="configuracion">
+    <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+    <span class="nav-label">Configuración</span>
+  </a>
 </nav>
 <div class="sidebar-footer">
   <div class="sidebar-version">ETM Dashboard v1.1 · 2025</div>

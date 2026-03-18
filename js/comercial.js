@@ -1,14 +1,15 @@
 /* ============================================================
    ETM Dashboard — comercial.js
    CRM: Pipeline Kanban + Hitos de Pago + Chart
+   3 categorías: Activo, Potencial Ex-Auspiciador, Potencial Nuevo
    ============================================================ */
 
 const DEFAULT_CLIENTES = [
-  { id: 1, empresa: 'Cliente ejemplo A', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Prospecto',          dias: 1 },
-  { id: 2, empresa: 'Cliente ejemplo B', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Contactado',         dias: 1 },
-  { id: 3, empresa: 'Cliente ejemplo C', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Propuesta Enviada',  dias: 1 },
-  { id: 4, empresa: 'Cliente ejemplo D', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Negociación',        dias: 1 },
-  { id: 5, empresa: 'Cliente ejemplo E', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Cerrado',            dias: 1 },
+  { id: 1, empresa: 'Cliente ejemplo A', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Prospecto',         dias: 1, tipo: 'potencial-nuevo' },
+  { id: 2, empresa: 'Cliente ejemplo B', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Contactado',        dias: 1, tipo: 'potencial-ex' },
+  { id: 3, empresa: 'Cliente ejemplo C', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Propuesta Enviada', dias: 1, tipo: 'potencial-ex' },
+  { id: 4, empresa: 'Cliente ejemplo D', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Negociación',       dias: 1, tipo: 'potencial-nuevo' },
+  { id: 5, empresa: 'Cliente ejemplo E', monto: 0, responsable: 'Catalina Pizarro', etapa: 'Cerrado',           dias: 1, tipo: 'activo' },
 ];
 
 const DEFAULT_HITOS = [
@@ -17,20 +18,58 @@ const DEFAULT_HITOS = [
 ];
 
 const META_ANUAL = 0;
-
 const STAGES = ['Prospecto', 'Contactado', 'Propuesta Enviada', 'Negociación', 'Cerrado'];
+
+let currentFilter = 'todos';
+
+// ── Tipo Labels ────────────────────────────────────────────
+const TIPO_LABELS = {
+  'activo':          { label: 'Cliente Activo',           badge: 'badge-green',  icon: 'fa-circle-check' },
+  'potencial-ex':    { label: 'Potencial Ex-Auspiciador', badge: 'badge-blue',   icon: 'fa-rotate-left' },
+  'potencial-nuevo': { label: 'Potencial Nuevo',          badge: 'badge-yellow', icon: 'fa-star' },
+};
+
+function tipoBadge(tipo) {
+  const t = TIPO_LABELS[tipo] || { label: tipo, badge: 'badge-gray', icon: 'fa-circle' };
+  return `<span class="badge ${t.badge}"><i class="fa-solid ${t.icon}" style="margin-right:3px;font-size:9px"></i>${t.label}</span>`;
+}
 
 // ── KPIs ───────────────────────────────────────────────────
 function renderKPIsComercial(clientes) {
-  const pipeline = clientes.reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
-  const activos = clientes.filter(c => c.etapa !== 'Perdido').length;
-  const cerrado = clientes.filter(c => c.etapa === 'Cerrado').reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
-  const pct = Math.round((cerrado / META_ANUAL) * 100);
+  const pipeline   = clientes.reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
+  const activos    = clientes.filter(c => c.tipo === 'activo').length;
+  const exAuspi    = clientes.filter(c => c.tipo === 'potencial-ex').length;
+  const nuevos     = clientes.filter(c => c.tipo === 'potencial-nuevo').length;
+  const cerrado    = clientes.filter(c => c.etapa === 'Cerrado').reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
+  const pct        = META_ANUAL > 0 ? Math.round((cerrado / META_ANUAL) * 100) : 0;
 
-  document.getElementById('kpi-pipeline').textContent = formatCLP(pipeline);
-  document.getElementById('kpi-activos').textContent = activos;
-  document.getElementById('kpi-meta').textContent = formatCLP(META_ANUAL);
-  document.getElementById('kpi-pct').textContent = pct + '%';
+  setText('kpi-pipeline',   formatCLP(pipeline));
+  setText('kpi-activos',    activos);
+  setText('kpi-ex-auspi',   exAuspi);
+  setText('kpi-nuevos',     nuevos);
+  setText('kpi-meta',       formatCLP(META_ANUAL));
+  setText('kpi-pct',        pct + '%');
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+// ── Tab Switching ──────────────────────────────────────────
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.crm-tab').forEach(btn => {
+    btn.classList.toggle('crm-tab-active', btn.dataset.filter === filter);
+  });
+  const clientes = LS.get('clientes', DEFAULT_CLIENTES);
+  renderKanban(clientes);
+  renderChart(clientes);
+}
+
+function filteredClientes(clientes) {
+  if (currentFilter === 'todos') return clientes;
+  return clientes.filter(c => c.tipo === currentFilter);
 }
 
 // ── Kanban Board ───────────────────────────────────────────
@@ -46,9 +85,10 @@ function renderKanban(clientes) {
   const board = document.getElementById('kanban-board');
   if (!board) return;
   board.innerHTML = '';
+  const visible = filteredClientes(clientes);
 
   STAGES.forEach(stage => {
-    const items = clientes.filter(c => c.etapa === stage);
+    const items = visible.filter(c => c.etapa === stage);
     const total = items.reduce((a, c) => a + (parseInt(c.monto) || 0), 0);
     const style = STAGE_STYLES[stage] || { header: 'kanban-prospecto', icon: 'fa-circle' };
 
@@ -71,6 +111,7 @@ function renderKanban(clientes) {
       card.className = 'kanban-card';
       card.innerHTML = `
         <div class="kanban-card-company">${escapeHtml(c.empresa)}</div>
+        <div style="margin:4px 0">${tipoBadge(c.tipo)}</div>
         <div class="kanban-card-contact"><i class="fa-solid fa-user" style="margin-right:4px"></i>${escapeHtml(c.responsable)}</div>
         <div class="kanban-card-amount">${formatCLP(c.monto)}</div>
         <div class="kanban-card-footer">
@@ -91,6 +132,10 @@ function renderHitos(hitos) {
   const tbody = document.querySelector('#hitos-table tbody');
   if (!tbody) return;
   tbody.innerHTML = '';
+  if (!hitos.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p>Sin hitos registrados</p></td></tr>';
+    return;
+  }
   hitos.forEach(h => {
     const tr = document.createElement('tr');
     if (h.estado === 'Vencido') tr.classList.add('vencido-row');
@@ -117,8 +162,8 @@ let chartInstance = null;
 function renderChart(clientes) {
   const ctx = document.getElementById('pipeline-chart');
   if (!ctx) return;
-  const counts = STAGES.map(s => clientes.filter(c => c.etapa === s).length);
-  const amounts = STAGES.map(s => clientes.filter(c => c.etapa === s).reduce((a, c) => a + (parseInt(c.monto) || 0), 0));
+  const visible = filteredClientes(clientes);
+  const amounts = STAGES.map(s => visible.filter(c => c.etapa === s).reduce((a, c) => a + (parseInt(c.monto) || 0), 0));
   if (chartInstance) chartInstance.destroy();
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
@@ -136,15 +181,8 @@ function renderChart(clientes) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { font: { size: 11 }, padding: 12 }
-        },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ${ctx.label}: ${formatCLP(ctx.raw)}`
-          }
-        }
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${formatCLP(ctx.raw)}` } }
       },
       cutout: '62%',
     }
@@ -170,17 +208,19 @@ function openEditCliente(id) {
   document.getElementById('cliente-responsable').value = row.responsable;
   document.getElementById('cliente-etapa').value = row.etapa;
   document.getElementById('cliente-dias').value = row.dias;
+  document.getElementById('cliente-tipo').value = row.tipo || 'potencial-nuevo';
   openModal('cliente-modal');
 }
 
 function saveCliente() {
   const id = document.getElementById('cliente-edit-id').value;
   const item = {
-    empresa: document.getElementById('cliente-empresa').value.trim(),
-    monto: parseCLP(document.getElementById('cliente-monto').value),
+    empresa:     document.getElementById('cliente-empresa').value.trim(),
+    monto:       parseCLP(document.getElementById('cliente-monto').value),
     responsable: document.getElementById('cliente-responsable').value.trim(),
-    etapa: document.getElementById('cliente-etapa').value,
-    dias: parseInt(document.getElementById('cliente-dias').value) || 0,
+    etapa:       document.getElementById('cliente-etapa').value,
+    dias:        parseInt(document.getElementById('cliente-dias').value) || 0,
+    tipo:        document.getElementById('cliente-tipo').value,
   };
   if (!item.empresa) { showToast('Completa los campos requeridos', 'error'); return; }
   let data = LS.get('clientes', DEFAULT_CLIENTES);
@@ -231,11 +271,11 @@ function openEditHito(id) {
 function saveHito() {
   const id = document.getElementById('hito-edit-id').value;
   const item = {
-    cliente: document.getElementById('hito-cliente').value.trim(),
-    hito: document.getElementById('hito-hito').value.trim(),
-    monto: parseCLP(document.getElementById('hito-monto').value),
+    cliente:     document.getElementById('hito-cliente').value.trim(),
+    hito:        document.getElementById('hito-hito').value.trim(),
+    monto:       parseCLP(document.getElementById('hito-monto').value),
     vencimiento: document.getElementById('hito-vencimiento').value.trim(),
-    estado: document.getElementById('hito-estado').value,
+    estado:      document.getElementById('hito-estado').value,
   };
   if (!item.cliente || !item.hito) { showToast('Completa los campos requeridos', 'error'); return; }
   let data = LS.get('hitos', DEFAULT_HITOS);
@@ -279,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHeader('CRM Comercial', 'Sponsors, clientes y pipeline de ventas');
 
   if (!localStorage.getItem('etm_clientes')) LS.set('clientes', DEFAULT_CLIENTES);
-  if (!localStorage.getItem('etm_hitos')) LS.set('hitos', DEFAULT_HITOS);
+  if (!localStorage.getItem('etm_hitos'))    LS.set('hitos', DEFAULT_HITOS);
 
   refreshComercial();
   renderHitos(LS.get('hitos', DEFAULT_HITOS));

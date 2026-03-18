@@ -7,6 +7,26 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    /* CRM Tabs */
+    .crm-tabs {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .crm-tab {
+      padding: 7px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      border: 2px solid #E5E7EB; background: #fff; color: #6B7280;
+      transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .crm-tab:hover { border-color: #7C3AED; color: #7C3AED; }
+    .crm-tab-active { background: #7C3AED; border-color: #7C3AED; color: #fff !important; }
+    .crm-tab .tab-count {
+      background: rgba(255,255,255,0.25); border-radius: 10px;
+      padding: 1px 6px; font-size: 10px;
+    }
+    .crm-tab:not(.crm-tab-active) .tab-count { background: #F3F4F6; color: #9CA3AF; }
+  </style>
 </head>
 <body>
 
@@ -19,29 +39,45 @@
 
   <div id="content-area">
 
-    <!-- KPI Cards -->
-    <div class="kpi-grid">
+    <!-- KPI Cards: 6 métricas -->
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">
       <div class="kpi-card">
         <div class="kpi-icon-wrap kpi-icon-purple"><i class="fa-solid fa-chart-line"></i></div>
         <div class="kpi-info">
           <div class="kpi-label">Total Pipeline</div>
-          <div class="kpi-value" id="kpi-pipeline" style="font-size:17px">—</div>
+          <div class="kpi-value" id="kpi-pipeline" style="font-size:15px">—</div>
           <div class="kpi-sub">Suma oportunidades activas</div>
         </div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-icon-wrap kpi-icon-blue"><i class="fa-solid fa-building"></i></div>
+        <div class="kpi-icon-wrap kpi-icon-green"><i class="fa-solid fa-circle-check"></i></div>
         <div class="kpi-info">
           <div class="kpi-label">Clientes Activos</div>
           <div class="kpi-value" id="kpi-activos">—</div>
-          <div class="kpi-sub">En pipeline</div>
+          <div class="kpi-sub">Contrato cerrado</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-blue"><i class="fa-solid fa-rotate-left"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Ex-Auspiciadores</div>
+          <div class="kpi-value" id="kpi-ex-auspi">—</div>
+          <div class="kpi-sub">Potenciales a recuperar</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap kpi-icon-amber"><i class="fa-solid fa-star"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Potenciales Nuevos</div>
+          <div class="kpi-value" id="kpi-nuevos">—</div>
+          <div class="kpi-sub">Nunca han auspiciado</div>
         </div>
       </div>
       <div class="kpi-card">
         <div class="kpi-icon-wrap kpi-icon-indigo"><i class="fa-solid fa-bullseye"></i></div>
         <div class="kpi-info">
           <div class="kpi-label">Meta Anual</div>
-          <div class="kpi-value" id="kpi-meta" style="font-size:17px">—</div>
+          <div class="kpi-value" id="kpi-meta" style="font-size:15px">—</div>
           <div class="kpi-sub">Objetivo 2025</div>
         </div>
       </div>
@@ -67,9 +103,22 @@
         </button>
       </div>
       <div class="panel-body">
-        <div class="kanban-container" id="kanban-board">
-          <!-- Rendered by JS -->
+        <!-- Tabs de filtro -->
+        <div class="crm-tabs">
+          <button class="crm-tab crm-tab-active" data-filter="todos" onclick="setFilter('todos')">
+            <i class="fa-solid fa-border-all"></i> Todos
+          </button>
+          <button class="crm-tab" data-filter="activo" onclick="setFilter('activo')">
+            <i class="fa-solid fa-circle-check"></i> Clientes Activos
+          </button>
+          <button class="crm-tab" data-filter="potencial-ex" onclick="setFilter('potencial-ex')">
+            <i class="fa-solid fa-rotate-left"></i> Ex-Auspiciadores
+          </button>
+          <button class="crm-tab" data-filter="potencial-nuevo" onclick="setFilter('potencial-nuevo')">
+            <i class="fa-solid fa-star"></i> Potenciales Nuevos
+          </button>
         </div>
+        <div class="kanban-container" id="kanban-board"></div>
       </div>
     </div>
 
@@ -138,6 +187,15 @@
         <div class="form-group">
           <label class="form-label">Empresa <span style="color:red">*</span></label>
           <input type="text" id="cliente-empresa" class="form-control" placeholder="Ej: ARAUCO" required />
+        </div>
+        <!-- Clasificación de cliente -->
+        <div class="form-group">
+          <label class="form-label">Tipo de Cliente <span style="color:red">*</span></label>
+          <select id="cliente-tipo" class="form-control form-select">
+            <option value="activo">Cliente Activo (contrato cerrado)</option>
+            <option value="potencial-ex">Potencial Ex-Auspiciador (fue sponsor antes)</option>
+            <option value="potencial-nuevo" selected>Potencial Nuevo (nunca ha auspiciado)</option>
+          </select>
         </div>
         <div class="form-row">
           <div class="form-group">

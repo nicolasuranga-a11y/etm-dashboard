@@ -6,6 +6,85 @@
   <title>Producción — ETM Dashboard 2025</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    /* ── Budget Bar ── */
+    .budget-bar-wrap {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .budget-bar-label { font-size: 13px; font-weight: 600; color: #374151; min-width: 200px; }
+    .budget-bar-label span { font-size: 11px; color: #9CA3AF; display: block; font-weight: 400; margin-top: 2px; }
+    .budget-bar-outer {
+      flex: 1; min-width: 200px;
+      height: 14px; background: #E5E7EB; border-radius: 99px; overflow: hidden; position: relative;
+    }
+    #budget-bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; background: #7C3AED; }
+    .budget-bar-right { display: flex; align-items: center; gap: 12px; min-width: 140px; }
+    #budget-bar-pct { font-size: 16px; font-weight: 700; color: #374151; }
+    #budget-bar-sub { font-size: 11px; color: #9CA3AF; }
+
+    /* ── Visual Gantt ── */
+    .gv-wrap { width: 100%; overflow-x: auto; padding-bottom: 8px; }
+    .gv-header-row { display: flex; border-bottom: 2px solid #E5E7EB; margin-bottom: 4px; }
+    .gv-header-label {
+      width: 200px; min-width: 200px;
+      font-size: 11px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: .05em;
+      padding: 8px 12px;
+    }
+    .gv-header-timeline {
+      flex: 1; position: relative; height: 28px; min-width: 500px;
+    }
+    .gv-month {
+      position: absolute; top: 6px;
+      font-size: 10px; font-weight: 600; color: #9CA3AF; white-space: nowrap;
+      transform: translateX(-50%);
+    }
+    .gv-gridline {
+      position: absolute; top: 0; bottom: 0;
+      width: 1px; background: #F3F4F6;
+    }
+    .gv-today {
+      position: absolute; top: 0; bottom: 0;
+      width: 2px; background: #EF4444; z-index: 2;
+    }
+    .gv-today-label {
+      position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+      font-size: 9px; font-weight: 700; color: #EF4444; white-space: nowrap;
+    }
+    .gv-row { display: flex; align-items: center; border-bottom: 1px solid #F3F4F6; }
+    .gv-row:hover { background: #FAFAFE; }
+    .gv-row-label {
+      width: 200px; min-width: 200px;
+      font-size: 12px; font-weight: 600; color: #374151;
+      padding: 10px 12px; display: flex; align-items: center; gap: 8px;
+      overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    }
+    .gv-state-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .gv-row-timeline {
+      flex: 1; position: relative; height: 40px; min-width: 500px;
+    }
+    .gv-bar {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      height: 26px; border-radius: 6px; overflow: hidden;
+      display: flex; align-items: center; min-width: 2px;
+      cursor: default; transition: box-shadow 0.2s;
+    }
+    .gv-bar:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .gv-bar-fill { height: 100%; transition: width 0.4s ease; flex-shrink: 0; opacity: 0.5; }
+    .gv-bar-label {
+      position: absolute; left: 8px; right: 4px;
+      font-size: 10px; font-weight: 700; color: #1F2937;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      z-index: 1;
+    }
+  </style>
 </head>
 <body>
 
@@ -31,9 +110,9 @@
       <div class="kpi-card">
         <div class="kpi-icon-wrap kpi-icon-blue"><i class="fa-solid fa-peso-sign"></i></div>
         <div class="kpi-info">
-          <div class="kpi-label">Monto Total Comprometido</div>
+          <div class="kpi-label">Monto Comprometido</div>
           <div class="kpi-value" id="kpi-monto-total" style="font-size:17px">—</div>
-          <div class="kpi-sub">CLP</div>
+          <div class="kpi-sub">vs presupuesto máximo</div>
         </div>
       </div>
       <div class="kpi-card">
@@ -54,16 +133,44 @@
       </div>
     </div>
 
-    <!-- GANTT SECTION -->
+    <!-- Budget Bar -->
+    <div class="budget-bar-wrap">
+      <div class="budget-bar-label">
+        Presupuesto EtMday 2025
+        <span>Máximo: $250.001.000 CLP</span>
+      </div>
+      <div class="budget-bar-outer">
+        <div id="budget-bar-fill" style="width:0%"></div>
+      </div>
+      <div class="budget-bar-right">
+        <span id="budget-bar-pct" style="font-size:16px;font-weight:700;color:#374151">0%</span>
+      </div>
+      <div id="budget-bar-sub" style="font-size:11px;color:#9CA3AF;width:100%">$0 comprometido de $250.001.000</div>
+    </div>
+
+    <!-- GANTT VISUAL -->
     <div class="panel">
       <div class="panel-header">
         <div>
-          <div class="panel-title"><i class="fa-solid fa-bars-progress"></i> Carta Gantt — EtMday 2025</div>
-          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Etapas de planificación y ejecución del evento</div>
+          <div class="panel-title"><i class="fa-solid fa-timeline"></i> Línea de Tiempo — EtMday 2025</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Vista visual de etapas y su avance</div>
         </div>
         <button class="btn btn-primary" onclick="openAddGantt()">
           <i class="fa-solid fa-plus"></i> Agregar Etapa
         </button>
+      </div>
+      <div class="panel-body">
+        <div id="gantt-visual" style="min-height:80px"></div>
+      </div>
+    </div>
+
+    <!-- GANTT TABLE (detalle) -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title"><i class="fa-solid fa-bars-progress"></i> Detalle de Etapas</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Carta Gantt — gestión y edición por etapa</div>
+        </div>
       </div>
       <div class="panel-body-flush">
         <div class="etm-table-wrap">
@@ -141,6 +248,7 @@
           <select id="gantt-responsable" class="form-control form-select">
             <option value="">Seleccionar...</option>
             <option>Pamela Abello</option>
+            <option>Nicolás Uranga</option>
           </select>
         </div>
         <div class="form-row">

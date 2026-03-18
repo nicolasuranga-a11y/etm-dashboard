@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuración — ETM Dashboard 2025</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    /* Lock screen */
+    #lock-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #1E1B4B 0%, #2D2A6B 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lock-box {
+      background: #fff; border-radius: 20px; padding: 40px;
+      width: 100%; max-width: 380px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .lock-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, #7C3AED, #A78BFA);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px; font-size: 26px; color: #fff;
+    }
+    .lock-title { font-size: 20px; font-weight: 700; color: #1E1B4B; margin-bottom: 6px; }
+    .lock-sub { font-size: 13px; color: #9CA3AF; margin-bottom: 24px; }
+    .lock-input {
+      width: 100%; padding: 12px 16px; border: 2px solid #E5E7EB;
+      border-radius: 10px; font-size: 15px; text-align: center;
+      letter-spacing: 4px; outline: none; transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+    .lock-input:focus { border-color: #7C3AED; }
+    .lock-btn {
+      width: 100%; padding: 12px; background: linear-gradient(135deg, #7C3AED, #A78BFA);
+      color: #fff; border: none; border-radius: 10px; font-size: 15px;
+      font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    }
+    .lock-btn:hover { opacity: 0.9; }
+    .lock-error { color: #EF4444; font-size: 12px; margin-top: 8px; display: none; }
+
+    /* Settings sections */
+    .config-section { margin-bottom: 28px; }
+    .config-section-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: #7C3AED; margin-bottom: 16px;
+      padding-bottom: 8px; border-bottom: 2px solid #EDE9FE;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .config-row {
+      display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;
+    }
+    .config-row .form-group { flex: 1; min-width: 200px; }
+    .config-team-list { display: flex; flex-direction: column; gap: 10px; }
+    .config-team-item {
+      display: flex; align-items: center; gap: 12px;
+      background: #F9FAFB; border-radius: 10px; padding: 12px 16px;
+      border: 1px solid #E5E7EB;
+    }
+    .config-team-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #7C3AED, #A78BFA);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .config-team-info { flex: 1; }
+    .config-team-name { font-size: 13px; font-weight: 600; color: #1F2937; }
+    .config-team-role { font-size: 11px; color: #9CA3AF; }
+    .config-team-area { font-size: 10px; font-weight: 600; color: #7C3AED; background: #EDE9FE; padding: 2px 8px; border-radius: 10px; }
+    .config-save-btn {
+      background: linear-gradient(135deg, #7C3AED, #A78BFA);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 12px 28px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s; display: flex;
+      align-items: center; gap: 8px;
+    }
+    .config-save-btn:hover { opacity: 0.9; }
+
+    .password-change-wrap {
+      background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 10px;
+      padding: 14px 16px; font-size: 13px; color: #92400E;
+      display: flex; align-items: center; gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Lock Screen -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+    <div class="lock-title">Acceso Restringido</div>
+    <div class="lock-sub">Esta sección es solo para el Director Ejecutivo</div>
+    <input type="password" id="lock-input" class="lock-input" placeholder="••••••" maxlength="20"
+      onkeydown="if(event.key==='Enter') checkPassword()" />
+    <button class="lock-btn" onclick="checkPassword()">
+      <i class="fa-solid fa-unlock"></i> Ingresar
+    </button>
+    <div class="lock-error" id="lock-error">Contraseña incorrecta. Inténtalo de nuevo.</div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar"></div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+  <header id="main-header"></header>
+
+  <div id="content-area">
+
+    <!-- Presupuesto y Metas -->
+    <div class="panel">
+      <div class="panel-body">
+        <div class="config-section">
+          <div class="config-section-title">
+            <i class="fa-solid fa-peso-sign"></i> Presupuesto y Metas
+          </div>
+          <div class="config-row">
+            <div class="form-group">
+              <label class="form-label">Presupuesto Máximo EtMday 2025 (CLP)</label>
+              <input type="number" id="cfg-presupuesto" class="form-control" placeholder="250001000" />
+              <small style="color:#9CA3AF;font-size:11px">Tope de gasto en producción del evento</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Meta Comercial Anual 2025 (CLP)</label>
+              <input type="number" id="cfg-meta-comercial" class="form-control" placeholder="0" />
+              <small style="color:#9CA3AF;font-size:11px">Objetivo de recaudación por auspicio</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Equipo -->
+        <div class="config-section">
+          <div class="config-section-title">
+            <i class="fa-solid fa-users"></i> Equipo Emprende tu Mente
+          </div>
+          <div class="config-team-list">
+
+            <div class="config-team-item">
+              <div class="config-team-avatar">NU</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Nicolás Uranga</div>
+                <div class="config-team-role">Director Ejecutivo</div>
+              </div>
+              <span class="config-team-area">Dirección</span>
+            </div>
+
+            <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">
+              Contenidos y Ecosistemas
+            </div>
+
+            <div class="config-team-item">
+              <div class="config-team-avatar">MI</div>
+              <div class="config-team-info">
+                <div class="config-team-name">María Ignacia</div>
+                <div class="config-team-role">Jefa de Contenidos y Ecosistemas</div>
+              </div>
+              <span class="config-team-area">Ecosistemas</span>
+            </div>
+            <div class="config-team-item">
+              <div class="config-team-avatar">JL</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Juan Pablo Lobos</div>
+                <div class="config-team-role">Equipo Contenidos</div>
+              </div>
+              <span class="config-team-area">Ecosistemas</span>
+            </div>
+            <div class="config-team-item">
+              <div class="config-team-avatar">IC</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Ignacio Cisternas</div>
+                <div class="config-team-role">Equipo Contenidos</div>
+              </div>
+              <span class="config-team-area">Ecosistemas</span>
+            </div>
+            <div class="config-team-item">
+              <div class="config-team-avatar">LF</div>
+              <div class="config-team-info">
+                <div class="config-team-name">León Fernández de Castro</div>
+                <div class="config-team-role">Equipo Contenidos</div>
+              </div>
+              <span class="config-team-area">Ecosistemas</span>
+            </div>
+
+            <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">
+              Producción
+            </div>
+
+            <div class="config-team-item">
+              <div class="config-team-avatar">PA</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Pamela Abello</div>
+                <div class="config-team-role">Jefa de Producción</div>
+              </div>
+              <span class="config-team-area">Producción</span>
+            </div>
+
+            <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">
+              Comercial
+            </div>
+
+            <div class="config-team-item">
+              <div class="config-team-avatar" style="background:#94A3B8">?</div>
+              <div class="config-team-info">
+                <div class="config-team-name" style="color:#9CA3AF">Jefe Comercial (vacante)</div>
+                <div class="config-team-role">Por definir</div>
+              </div>
+              <span class="config-team-area" style="background:#F3F4F6;color:#9CA3AF">Comercial</span>
+            </div>
+            <div class="config-team-item">
+              <div class="config-team-avatar">CP</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Catalina Pizarro</div>
+                <div class="config-team-role">Analista Comercial y Control de Gestión</div>
+              </div>
+              <span class="config-team-area">Comercial</span>
+            </div>
+
+            <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">
+              Marketing y Comunicaciones
+            </div>
+
+            <div class="config-team-item">
+              <div class="config-team-avatar">JLo</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Javiera López</div>
+                <div class="config-team-role">Jefa de Marketing y Comunicaciones</div>
+              </div>
+              <span class="config-team-area">Marketing</span>
+            </div>
+            <div class="config-team-item">
+              <div class="config-team-avatar">AB</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Andrea Báez</div>
+                <div class="config-team-role">Líder de Comunidades</div>
+              </div>
+              <span class="config-team-area">Marketing</span>
+            </div>
+            <div class="config-team-item">
+              <div class="config-team-avatar">DA</div>
+              <div class="config-team-info">
+                <div class="config-team-name">Daniela Alegría</div>
+                <div class="config-team-role">Diseñadora</div>
+              </div>
+              <span class="config-team-area">Marketing</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="config-section">
+          <div class="config-section-title">
+            <i class="fa-solid fa-shield-halved"></i> Seguridad
+          </div>
+          <div class="config-row">
+            <div class="form-group">
+              <label class="form-label">Nueva Contraseña de Director</label>
+              <input type="password" id="cfg-new-pass" class="form-control" placeholder="Nueva contraseña" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirmar Contraseña</label>
+              <input type="password" id="cfg-confirm-pass" class="form-control" placeholder="Repite la contraseña" />
+            </div>
+          </div>
+          <div class="password-change-wrap">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            La contraseña se guarda localmente en este navegador. Si cambias de equipo, deberás recordarla.
+          </div>
+        </div>
+
+        <!-- Guardar -->
+        <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px">
+          <button class="config-save-btn" onclick="saveConfig()">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Configuración
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="../js/shared.js"></script>
+<script>
+  const DEFAULT_PASSWORD = 'etm2025';
+
+  function checkPassword() {
+    const input = document.getElementById('lock-input').value;
+    const saved = localStorage.getItem('etm_director_pass') || DEFAULT_PASSWORD;
+    if (input === saved) {
+      document.getElementById('lock-screen').style.display = 'none';
+      document.getElementById('main-content').style.display = '';
+      loadConfig();
+    } else {
+      const err = document.getElementById('lock-error');
+      err.style.display = 'block';
+      document.getElementById('lock-input').value = '';
+      setTimeout(() => { err.style.display = 'none'; }, 3000);
+    }
+  }
+
+  function loadConfig() {
+    const cfg = JSON.parse(localStorage.getItem('etm_config') || '{}');
+    if (cfg.presupuesto) document.getElementById('cfg-presupuesto').value = cfg.presupuesto;
+    if (cfg.metaComercial) document.getElementById('cfg-meta-comercial').value = cfg.metaComercial;
+  }
+
+  function saveConfig() {
+    const newPass    = document.getElementById('cfg-new-pass').value.trim();
+    const confirmPass = document.getElementById('cfg-confirm-pass').value.trim();
+
+    if (newPass) {
+      if (newPass !== confirmPass) {
+        showToast('Las contraseñas no coinciden', 'error'); return;
+      }
+      if (newPass.length < 4) {
+        showToast('La contraseña debe tener al menos 4 caracteres', 'error'); return;
+      }
+      localStorage.setItem('etm_director_pass', newPass);
+    }
+
+    const cfg = {
+      presupuesto:   parseInt(document.getElementById('cfg-presupuesto').value) || 250001000,
+      metaComercial: parseInt(document.getElementById('cfg-meta-comercial').value) || 0,
+    };
+    localStorage.setItem('etm_config', JSON.stringify(cfg));
+    showToast('Configuración guardada correctamente');
+    document.getElementById('cfg-new-pass').value = '';
+    document.getElementById('cfg-confirm-pass').value = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderSidebar('configuracion');
+    renderHeader('Configuración', 'Panel de administración — Director Ejecutivo');
+    document.getElementById('lock-input').focus();
+  });
+</script>
+</body>
+</html>

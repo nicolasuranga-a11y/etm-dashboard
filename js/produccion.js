@@ -1,19 +1,34 @@
 /* ============================================================
    ETM Dashboard — produccion.js
-   Dashboard de Producción: Gantt + Proveedores
+   Dashboard de Producción: Gantt Visual + Proveedores
    ============================================================ */
+
+const PRESUPUESTO_MAX = 250001000; // Presupuesto máximo EtMday 2025
 
 // ── Default Data ───────────────────────────────────────────
 const DEFAULT_GANTT = [
-  { id: 1, etapa: 'Etapa ejemplo 1', responsable: 'Pamela Abello', inicio: '01/01/2025', termino: '30/06/2025', avance: 0, estado: 'Pendiente' },
-  { id: 2, etapa: 'Etapa ejemplo 2', responsable: 'Pamela Abello', inicio: '01/02/2025', termino: '30/09/2025', avance: 0, estado: 'Pendiente' },
-  { id: 3, etapa: 'Etapa ejemplo 3', responsable: 'Pamela Abello', inicio: '01/03/2025', termino: '30/11/2025', avance: 0, estado: 'Pendiente' },
+  { id: 1, etapa: 'Etapa ejemplo 1', responsable: 'Pamela Abello', inicio: '01/03/2025', termino: '30/06/2025', avance: 0, estado: 'Pendiente' },
+  { id: 2, etapa: 'Etapa ejemplo 2', responsable: 'Pamela Abello', inicio: '01/05/2025', termino: '30/09/2025', avance: 0, estado: 'Pendiente' },
+  { id: 3, etapa: 'Etapa ejemplo 3', responsable: 'Pamela Abello', inicio: '01/08/2025', termino: '30/11/2025', avance: 0, estado: 'Pendiente' },
 ];
 
 const DEFAULT_PROVEEDORES = [
   { id: 1, proveedor: 'Proveedor ejemplo 1', servicio: 'Servicio ejemplo A', monto: 0, estado: 'Pendiente', cuotas: '0/1' },
   { id: 2, proveedor: 'Proveedor ejemplo 2', servicio: 'Servicio ejemplo B', monto: 0, estado: 'Pendiente', cuotas: '0/1' },
 ];
+
+// ── Helpers ────────────────────────────────────────────────
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function parseDate(str) {
+  if (!str) return null;
+  const parts = str.split('/');
+  if (parts.length !== 3) return null;
+  const d = new Date(parts[2], parts[1] - 1, parts[0]);
+  return isNaN(d) ? null : d;
+}
 
 // ── KPIs ───────────────────────────────────────────────────
 function calcKPIs(proveedores) {
@@ -27,9 +42,124 @@ function calcKPIs(proveedores) {
 function renderKPIs(proveedores) {
   const { total, montoTotal, pagados, pendientes } = calcKPIs(proveedores);
   document.getElementById('kpi-total-proveedores').textContent = total;
-  document.getElementById('kpi-monto-total').textContent = formatCLP(montoTotal);
   document.getElementById('kpi-pagos-completados').textContent = pagados;
   document.getElementById('kpi-pagos-pendientes').textContent = pendientes;
+
+  // Budget progress
+  const pct = PRESUPUESTO_MAX > 0 ? Math.min(100, Math.round((montoTotal / PRESUPUESTO_MAX) * 100)) : 0;
+  const montoEl = document.getElementById('kpi-monto-total');
+  if (montoEl) montoEl.textContent = formatCLP(montoTotal);
+
+  const bar = document.getElementById('budget-bar-fill');
+  const label = document.getElementById('budget-bar-pct');
+  const sub = document.getElementById('budget-bar-sub');
+  if (bar) {
+    bar.style.width = pct + '%';
+    bar.style.background = pct > 90 ? '#EF4444' : pct > 70 ? '#F59E0B' : '#7C3AED';
+  }
+  if (label) label.textContent = pct + '%';
+  if (sub) sub.textContent = formatCLP(montoTotal) + ' comprometido de ' + formatCLP(PRESUPUESTO_MAX);
+}
+
+// ── Visual Gantt ───────────────────────────────────────────
+function renderGanttVisual(data) {
+  const container = document.getElementById('gantt-visual');
+  if (!container) return;
+
+  if (!data.length) {
+    container.innerHTML = '<p style="text-align:center;color:#9CA3AF;padding:32px 20px">Sin etapas registradas. Agrega una etapa para ver la línea de tiempo.</p>';
+    return;
+  }
+
+  const dates = data.flatMap(r => [parseDate(r.inicio), parseDate(r.termino)]).filter(Boolean);
+  if (!dates.length) {
+    container.innerHTML = '<p style="text-align:center;color:#9CA3AF;padding:32px 20px">Define fechas en las etapas para ver la línea de tiempo.</p>';
+    return;
+  }
+
+  const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
+  const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+  // Add 5% padding on each side
+  const totalMs = (maxDate - minDate) || (1000 * 60 * 60 * 24 * 30);
+
+  // Generate months for header
+  const months = [];
+  let cur = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+  while (cur <= maxDate) {
+    months.push(new Date(cur));
+    cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+  }
+  const monthNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+  const stateColors = {
+    'Completado': { bg: '#D1FAE5', border: '#22C55E', fill: '#22C55E' },
+    'En curso':   { bg: '#EDE9FE', border: '#7C3AED', fill: '#7C3AED' },
+    'Pendiente':  { bg: '#F3F4F6', border: '#94A3B8', fill: '#94A3B8' },
+    'Pausado':    { bg: '#FEE2E2', border: '#EF4444', fill: '#EF4444' },
+  };
+
+  let monthsHtml = months.map(m => {
+    const leftPct = ((m - minDate) / totalMs) * 100;
+    return `<div class="gv-month" style="left:${leftPct.toFixed(2)}%">${monthNames[m.getMonth()]} '${String(m.getFullYear()).slice(2)}</div>`;
+  }).join('');
+
+  let gridLines = months.map(m => {
+    const leftPct = ((m - minDate) / totalMs) * 100;
+    return `<div class="gv-gridline" style="left:${leftPct.toFixed(2)}%"></div>`;
+  }).join('');
+
+  // Today marker
+  const today = new Date();
+  let todayHtml = '';
+  if (today >= minDate && today <= maxDate) {
+    const todayPct = ((today - minDate) / totalMs) * 100;
+    todayHtml = `<div class="gv-today" style="left:${todayPct.toFixed(2)}%"><div class="gv-today-label">Hoy</div></div>`;
+  }
+
+  let rowsHtml = data.map(r => {
+    const start = parseDate(r.inicio);
+    const end = parseDate(r.termino);
+    const colors = stateColors[r.estado] || stateColors['Pendiente'];
+    const pct = Math.min(100, Math.max(0, parseInt(r.avance) || 0));
+
+    let barHtml = '';
+    if (start && end) {
+      const leftPct = Math.max(0, ((start - minDate) / totalMs) * 100);
+      const widthPct = Math.max(1, ((end - start) / totalMs) * 100);
+      barHtml = `
+        <div class="gv-bar" style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;background:${colors.bg};border:2px solid ${colors.border}" title="${escapeHtml(r.etapa)} · ${pct}%">
+          <div class="gv-bar-fill" style="width:${pct}%;background:${colors.fill}"></div>
+          <span class="gv-bar-label">${escapeHtml(r.etapa)} · ${pct}%</span>
+        </div>`;
+    } else {
+      barHtml = `<div style="padding:8px;font-size:11px;color:#9CA3AF">Sin fechas definidas</div>`;
+    }
+
+    return `
+      <div class="gv-row">
+        <div class="gv-row-label" title="${escapeHtml(r.etapa)}">
+          <span class="gv-state-dot" style="background:${colors.border}"></span>
+          <span>${escapeHtml(r.etapa)}</span>
+        </div>
+        <div class="gv-row-timeline">
+          ${gridLines}
+          ${todayHtml}
+          ${barHtml}
+        </div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="gv-wrap">
+      <div class="gv-header-row">
+        <div class="gv-header-label">Etapa</div>
+        <div class="gv-header-timeline">
+          ${monthsHtml}
+          ${gridLines}
+        </div>
+      </div>
+      ${rowsHtml}
+    </div>`;
 }
 
 // ── Gantt Table ────────────────────────────────────────────
@@ -73,7 +203,7 @@ function renderProveedores(data) {
   if (!tbody) return;
   tbody.innerHTML = '';
   if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fa-solid fa-store-slash"></i><p>Sin proveedores registrados</p></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fa-solid fa-store-slash"></i><p>Sin proveedores registrados</p></td></tr>';
     return;
   }
   data.forEach(row => {
@@ -145,14 +275,13 @@ function saveGantt() {
     showToast('Etapa agregada correctamente');
   }
   closeModal('gantt-modal');
-  renderGantt(data);
-  renderProveedores(LS.get('proveedores', DEFAULT_PROVEEDORES));
+  refreshProduccion();
 }
 
 function deleteGanttRow(id) {
   confirmAction('¿Eliminar esta etapa del Gantt?', () => {
-    const data = LS.remove('gantt', id);
-    renderGantt(LS.get('gantt', DEFAULT_GANTT));
+    LS.remove('gantt', id);
+    refreshProduccion();
     showToast('Etapa eliminada', 'info');
   });
 }
@@ -203,39 +332,34 @@ function saveProveedor() {
     showToast('Proveedor agregado correctamente');
   }
   closeModal('prov-modal');
-  const proveedores = LS.get('proveedores', DEFAULT_PROVEEDORES);
-  renderProveedores(proveedores);
-  renderKPIs(proveedores);
+  refreshProduccion();
 }
 
 function deleteProveedor(id) {
   confirmAction('¿Eliminar este proveedor?', () => {
     LS.remove('proveedores', id);
-    const proveedores = LS.get('proveedores', DEFAULT_PROVEEDORES);
-    renderProveedores(proveedores);
-    renderKPIs(proveedores);
+    refreshProduccion();
     showToast('Proveedor eliminado', 'info');
   });
 }
 
-// ── Escape HTML ────────────────────────────────────────────
-function escapeHtml(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── Refresh All ────────────────────────────────────────────
+function refreshProduccion() {
+  const ganttData = LS.get('gantt', DEFAULT_GANTT);
+  const provData = LS.get('proveedores', DEFAULT_PROVEEDORES);
+  renderKPIs(provData);
+  renderGanttVisual(ganttData);
+  renderGantt(ganttData);
+  renderProveedores(provData);
 }
 
 // ── Init ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderSidebar('produccion');
-  renderHeader('Producción — EtMday 2025', 'Planificación y proveedores del evento');
+  renderHeader('Producción — EtMday 2025', 'Planificación, proveedores y carta Gantt del evento');
 
-  // Load data (fallback to defaults on first visit)
   if (!localStorage.getItem('etm_gantt')) LS.set('gantt', DEFAULT_GANTT);
   if (!localStorage.getItem('etm_proveedores')) LS.set('proveedores', DEFAULT_PROVEEDORES);
 
-  const ganttData = LS.get('gantt', DEFAULT_GANTT);
-  const provData = LS.get('proveedores', DEFAULT_PROVEEDORES);
-
-  renderKPIs(provData);
-  renderGantt(ganttData);
-  renderProveedores(provData);
+  refreshProduccion();
 });
