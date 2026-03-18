@@ -3,52 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tareas &amp; Proyectos — ETM Dashboard 2025</title>
+  <title>Proyectos & Tareas — ETM Dashboard 2025</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="../css/styles.css" />
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
-    /* ── Filters bar ─────────────────────────── */
+    /* ── Tabs ── */
+    .main-tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:2px solid #E5E7EB; }
+    .main-tab {
+      padding:10px 22px; font-size:13px; font-weight:600; cursor:pointer;
+      border:none; background:none; color:#6B7280;
+      border-bottom:3px solid transparent; margin-bottom:-2px;
+      transition:all 0.2s; display:flex; align-items:center; gap:7px;
+    }
+    .main-tab:hover { color:#7C3AED; }
+    .main-tab.tab-active { color:#7C3AED; border-bottom-color:#7C3AED; }
+
+    /* ── Proyecto Cards ── */
+    .proyectos-grid {
+      display:grid; gap:20px;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    }
+    .proyecto-card {
+      background:#fff; border-radius:14px; padding:20px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.07);
+      border:1px solid #F3F4F6;
+      transition: box-shadow 0.2s;
+    }
+    .proyecto-card:hover { box-shadow:0 4px 16px rgba(124,58,237,0.1); }
+    .proyecto-card-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+    .proyecto-nombre { font-size:16px; font-weight:700; color:#1E1B4B; margin-bottom:4px; }
+    .proyecto-desc { font-size:12px; color:#9CA3AF; line-height:1.5; }
+    .proyecto-meta { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:#6B7280; margin-bottom:12px; }
+    .proyecto-meta span { display:flex; align-items:center; gap:5px; }
+    .proyecto-card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:10px; border-top:1px solid #F3F4F6; }
+
+    /* ── Filters bar ── */
     .filters-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      padding: 14px 20px;
-      border-bottom: 1px solid #F3F4F6;
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      padding:14px 20px; border-bottom:1px solid #F3F4F6;
     }
-    .filters-bar select,
-    .filters-bar input[type="text"] {
-      height: 36px;
-      padding: 0 12px;
-      border: 1px solid #E5E7EB;
-      border-radius: 8px;
-      font-size: 13px;
-      color: #374151;
-      outline: none;
-      background: white;
-      transition: border-color 0.15s;
+    .filters-bar select, .filters-bar input[type="text"] {
+      height:36px; padding:0 12px; border:1px solid #E5E7EB;
+      border-radius:8px; font-size:13px; color:#374151;
+      outline:none; background:white; transition:border-color 0.15s;
     }
-    .filters-bar select:focus,
-    .filters-bar input[type="text"]:focus {
-      border-color: #7C3AED;
+    .filters-bar select:focus, .filters-bar input:focus { border-color:#7C3AED; }
+    .filters-bar input[type="text"] { min-width:180px; }
+    .filter-search-wrap { position:relative; }
+    .filter-search-wrap i { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#9CA3AF; font-size:13px; }
+    .filter-search-wrap input { padding-left:30px !important; }
+
+    /* ── Notif banner ── */
+    .notif-banner {
+      background:#FEF3C7; border:1px solid #FCD34D; border-radius:10px;
+      padding:12px 16px; font-size:12px; color:#92400E;
+      display:flex; align-items:center; gap:10px; margin-bottom:16px;
     }
-    .filters-bar input[type="text"] {
-      min-width: 200px;
-    }
-    .filter-search-wrap {
-      position: relative;
-    }
-    .filter-search-wrap i {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #9CA3AF;
-      font-size: 13px;
-    }
-    .filter-search-wrap input {
-      padding-left: 30px !important;
-    }
+    .notif-banner.hidden { display:none; }
   </style>
 </head>
 <body>
@@ -63,7 +76,7 @@
   <div id="content-area">
 
     <!-- KPI Cards -->
-    <div class="kpi-grid">
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
       <div class="kpi-card">
         <div class="kpi-icon-wrap kpi-icon-purple"><i class="fa-solid fa-list-check"></i></div>
         <div class="kpi-info">
@@ -96,89 +109,163 @@
           <div class="kpi-sub">Pasaron su plazo</div>
         </div>
       </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap" style="background:#FEF3C7"><i class="fa-solid fa-bell" style="color:#D97706"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">Próximas (3d)</div>
+          <div class="kpi-value" id="kpi-proximas">—</div>
+          <div class="kpi-sub">Vencen en 3 días</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Tareas Table Panel -->
-    <div class="panel">
-      <div class="panel-header">
+    <!-- Main Tabs -->
+    <div class="main-tabs">
+      <button class="main-tab tab-active" id="tab-btn-proyectos" onclick="switchTab('proyectos')">
+        <i class="fa-solid fa-diagram-project"></i> Proyectos
+      </button>
+      <button class="main-tab" id="tab-btn-tareas" onclick="switchTab('tareas')">
+        <i class="fa-solid fa-table-list"></i> Tareas
+      </button>
+    </div>
+
+    <!-- ===== PANEL: Proyectos ===== -->
+    <div id="tab-panel-proyectos">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div>
-          <div class="panel-title"><i class="fa-solid fa-table-list"></i> Tareas & Proyectos</div>
-          <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Bucket list de tareas por área y responsable</div>
+          <div style="font-size:14px;font-weight:700;color:#1E1B4B">Proyectos activos</div>
+          <div style="font-size:12px;color:#9CA3AF">Cada proyecto agrupa tareas de distintas áreas y personas</div>
         </div>
-        <button class="btn btn-primary" onclick="openAddTarea()">
-          <i class="fa-solid fa-plus"></i> Agregar Tarea
+        <button class="btn btn-primary" onclick="openAddProyecto()">
+          <i class="fa-solid fa-plus"></i> Nuevo Proyecto
         </button>
       </div>
+      <div class="proyectos-grid" id="proyectos-grid">
+        <div style="text-align:center;padding:40px;color:#9CA3AF">Cargando proyectos...</div>
+      </div>
+    </div>
 
-      <!-- Filters bar -->
-      <div class="filters-bar">
-        <select id="filter-area" title="Filtrar por área">
-          <option value="">Todas las áreas</option>
-          <option>Producción</option>
-          <option>Comercial</option>
-          <option>Marketing</option>
-          <option>Ecosistemas</option>
-          <option>Dirección</option>
-          <option>RRHH</option>
-          <option>Operaciones</option>
-        </select>
-
-        <select id="filter-responsable" title="Filtrar por responsable">
-          <option value="">Todos los responsables</option>
-          <option>Nicolás Uranga</option>
-          <option>María Ignacia</option>
-          <option>Juan Pablo Lobos</option>
-          <option>Ignacio Cisternas</option>
-          <option>León Fernández de Castro</option>
-          <option>Pamela Abello</option>
-          <option>Catalina Pizarro</option>
-          <option>Javiera López</option>
-          <option>Andrea Báez</option>
-          <option>Daniela Alegría</option>
-          <option>(Otro)</option>
-        </select>
-
-        <select id="filter-estado" title="Filtrar por estado">
-          <option value="">Todos los estados</option>
-          <option>Pendiente</option>
-          <option>En curso</option>
-          <option>Completada</option>
-          <option>Bloqueada</option>
-        </select>
-
-        <div class="filter-search-wrap">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="filter-search" placeholder="Buscar tarea o proyecto…" />
+    <!-- ===== PANEL: Tareas ===== -->
+    <div id="tab-panel-tareas" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title"><i class="fa-solid fa-table-list"></i> Todas las Tareas</div>
+            <div style="font-size:12px;color:#9CA3AF;margin-top:2px">Vista consolidada de tareas de todos los proyectos</div>
+          </div>
+          <button class="btn btn-primary" onclick="openAddTarea()">
+            <i class="fa-solid fa-plus"></i> Agregar Tarea
+          </button>
         </div>
 
-        <button class="btn btn-secondary btn-sm" id="filter-clear" title="Limpiar todos los filtros">
-          <i class="fa-solid fa-times"></i> Limpiar filtros
-        </button>
-      </div>
+        <!-- Filters -->
+        <div class="filters-bar">
+          <select id="filter-proyecto" title="Filtrar por proyecto">
+            <option value="">Todos los proyectos</option>
+          </select>
+          <select id="filter-area" title="Filtrar por área">
+            <option value="">Todas las áreas</option>
+            <option>Producción</option><option>Comercial</option>
+            <option>Marketing</option><option>Ecosistemas</option>
+            <option>Dirección</option><option>RRHH</option><option>Operaciones</option>
+          </select>
+          <select id="filter-responsable" title="Filtrar por responsable">
+            <option value="">Todos</option>
+            <option>Nicolás Uranga</option>
+            <option>María Ignacia</option>
+            <option>Juan Pablo Lobos</option>
+            <option>Ignacia Cisternas</option>
+            <option>León Fernández de Castro</option>
+            <option>Pamela Abello</option>
+            <option>Catalina Pizarro</option>
+            <option>Javiera López</option>
+            <option>Andrea Báez</option>
+            <option>Daniela Alegría</option>
+          </select>
+          <select id="filter-estado" title="Filtrar por estado">
+            <option value="">Todos los estados</option>
+            <option>Pendiente</option><option>En curso</option>
+            <option>Completada</option><option>Bloqueada</option>
+          </select>
+          <div class="filter-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="filter-search" placeholder="Buscar tarea…" />
+          </div>
+          <button class="btn btn-secondary btn-sm" id="filter-clear">
+            <i class="fa-solid fa-times"></i> Limpiar
+          </button>
+        </div>
 
-      <div class="panel-body-flush">
-        <div class="etm-table-wrap">
-          <table class="etm-table" id="tareas-table">
-            <thead>
-              <tr>
-                <th style="width:32px">#</th>
-                <th>Tarea a Ejecutar</th>
-                <th>Proyecto</th>
-                <th style="white-space:nowrap">Plazo</th>
-                <th>Responsable</th>
-                <th>Área</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="8" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
-            </tbody>
-          </table>
+        <div class="panel-body-flush">
+          <div class="etm-table-wrap">
+            <table class="etm-table" id="tareas-table">
+              <thead>
+                <tr>
+                  <th style="width:32px">#</th>
+                  <th>Tarea a Ejecutar</th>
+                  <th>Proyecto</th>
+                  <th style="white-space:nowrap">Plazo</th>
+                  <th>Responsable</th>
+                  <th>Área</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="8" style="text-align:center;padding:32px;color:#9CA3AF">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ===== MODAL: Proyecto ===== -->
+<div class="modal-overlay" id="proyecto-modal">
+  <div class="modal-box" style="max-width:500px">
+    <div class="modal-header">
+      <span class="modal-title" id="proyecto-modal-title">Nuevo Proyecto</span>
+      <button class="modal-close" onclick="closeModal('proyecto-modal')"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="proyecto-form" onsubmit="return false">
+        <input type="hidden" id="proyecto-edit-id" />
+        <div class="form-group">
+          <label class="form-label">Nombre del Proyecto <span style="color:red">*</span></label>
+          <input type="text" id="proyecto-nombre" class="form-control" placeholder="Ej: EtMtuesday 21 de abril" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción</label>
+          <textarea id="proyecto-desc" class="form-control" rows="2" placeholder="Describe el objetivo del proyecto…" style="resize:vertical"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fecha Inicio</label>
+            <input type="text" id="proyecto-inicio" class="form-control" placeholder="DD/MM/YYYY" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha Fin</label>
+            <input type="text" id="proyecto-fin" class="form-control" placeholder="DD/MM/YYYY" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select id="proyecto-estado" class="form-control form-select">
+            <option>Pendiente</option>
+            <option selected>En curso</option>
+            <option>Completado</option>
+            <option>Pausado</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('proyecto-modal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProyecto()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+    </div>
   </div>
 </div>
 
@@ -192,23 +279,22 @@
     <div class="modal-body">
       <form id="tarea-form" onsubmit="return false">
         <input type="hidden" id="tarea-edit-id" />
-
         <div class="form-group">
           <label class="form-label">Tarea a Ejecutar <span style="color:red">*</span></label>
           <input type="text" id="tarea-desc" class="form-control" placeholder="Describe la tarea…" required />
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Proyecto</label>
-            <input type="text" id="tarea-proyecto" class="form-control" placeholder="Ej: Proyecto A" />
+            <select id="tarea-proyecto" class="form-control form-select">
+              <option value="">Sin proyecto</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label">Plazo</label>
             <input type="text" id="tarea-plazo" class="form-control" placeholder="DD/MM/YYYY" />
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Responsable</label>
@@ -217,40 +303,31 @@
               <option>Nicolás Uranga</option>
               <option>María Ignacia</option>
               <option>Juan Pablo Lobos</option>
-              <option>Ignacio Cisternas</option>
+              <option>Ignacia Cisternas</option>
               <option>León Fernández de Castro</option>
               <option>Pamela Abello</option>
               <option>Catalina Pizarro</option>
               <option>Javiera López</option>
               <option>Andrea Báez</option>
               <option>Daniela Alegría</option>
-              <option>(Otro)</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Área</label>
             <select id="tarea-area" class="form-control form-select">
-              <option>Producción</option>
-              <option>Comercial</option>
-              <option>Marketing</option>
-              <option>Ecosistemas</option>
-              <option>Dirección</option>
-              <option>RRHH</option>
-              <option>Operaciones</option>
+              <option>Producción</option><option>Comercial</option>
+              <option>Marketing</option><option>Ecosistemas</option>
+              <option>Dirección</option><option>RRHH</option><option>Operaciones</option>
             </select>
           </div>
         </div>
-
         <div class="form-group">
           <label class="form-label">Estado</label>
           <select id="tarea-estado" class="form-control form-select">
-            <option>Pendiente</option>
-            <option>En curso</option>
-            <option>Completada</option>
-            <option>Bloqueada</option>
+            <option>Pendiente</option><option>En curso</option>
+            <option>Completada</option><option>Bloqueada</option>
           </select>
         </div>
-
       </form>
     </div>
     <div class="modal-footer">
@@ -260,9 +337,7 @@
   </div>
 </div>
 
-<!-- Toast container -->
 <div id="toast-container"></div>
-
 <script src="../js/shared.js"></script>
 <script src="../js/tareas.js"></script>
 </body>

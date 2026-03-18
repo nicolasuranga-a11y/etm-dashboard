@@ -251,6 +251,38 @@
           </div>
         </div>
 
+        <!-- Email Notificaciones -->
+        <div class="config-section">
+          <div class="config-section-title">
+            <i class="fa-solid fa-envelope"></i> Notificaciones por Email (EmailJS)
+          </div>
+          <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px 16px;font-size:12px;color:#1E40AF;margin-bottom:16px;line-height:1.6">
+            <strong>¿Cómo activar?</strong><br>
+            1. Crea una cuenta gratuita en <a href="https://www.emailjs.com" target="_blank" style="color:#7C3AED">emailjs.com</a> (200 emails/mes gratis)<br>
+            2. Conecta tu Gmail como servicio → copia el <strong>Service ID</strong><br>
+            3. Crea una plantilla con estas variables: <code>{{responsable}}</code>, <code>{{tarea}}</code>, <code>{{plazo}}</code>, <code>{{proyecto}}</code>, <code>{{mensaje}}</code> → copia el <strong>Template ID</strong><br>
+            4. Ve a Account → copia tu <strong>Public Key</strong><br>
+            5. Pega los 3 datos abajo y guarda. Las notificaciones se enviarán automáticamente cuando alguien abra el dashboard y haya tareas venciendo en 3 días.<br><br>
+            <strong>Mensaje que recibirá cada persona:</strong><br>
+            <em>"Tarea con fecha próxima a cumplirse. ¿La tienes lista?"</em>
+          </div>
+          <div class="config-row">
+            <div class="form-group">
+              <label class="form-label">Public Key</label>
+              <input type="text" id="cfg-emailjs-pubkey" class="form-control" placeholder="Ej: user_XXXXXXXXXXXX" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Service ID</label>
+              <input type="text" id="cfg-emailjs-service" class="form-control" placeholder="Ej: service_XXXXXXX" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Template ID</label>
+              <input type="text" id="cfg-emailjs-template" class="form-control" placeholder="Ej: template_XXXXXXX" />
+            </div>
+          </div>
+          <div id="emailjs-status" style="font-size:12px;color:#9CA3AF;margin-top:-8px"></div>
+        </div>
+
         <!-- Contraseña -->
         <div class="config-section">
           <div class="config-section-title">
@@ -308,8 +340,20 @@
 
   function loadConfig() {
     const cfg = JSON.parse(localStorage.getItem('etm_config') || '{}');
-    if (cfg.presupuesto) document.getElementById('cfg-presupuesto').value = cfg.presupuesto;
+    if (cfg.presupuesto)   document.getElementById('cfg-presupuesto').value = cfg.presupuesto;
     if (cfg.metaComercial) document.getElementById('cfg-meta-comercial').value = cfg.metaComercial;
+
+    const ejs = JSON.parse(localStorage.getItem('etm_emailjs') || '{}');
+    if (ejs.publicKey)   document.getElementById('cfg-emailjs-pubkey').value   = ejs.publicKey;
+    if (ejs.serviceId)   document.getElementById('cfg-emailjs-service').value   = ejs.serviceId;
+    if (ejs.templateId)  document.getElementById('cfg-emailjs-template').value  = ejs.templateId;
+
+    const status = document.getElementById('emailjs-status');
+    if (ejs.publicKey && ejs.serviceId && ejs.templateId) {
+      status.innerHTML = '<span style="color:#22C55E"><i class="fa-solid fa-circle-check"></i> Notificaciones por email configuradas y activas</span>';
+    } else {
+      status.innerHTML = '<span style="color:#F59E0B"><i class="fa-solid fa-triangle-exclamation"></i> Sin configurar — las notificaciones no se enviarán</span>';
+    }
   }
 
   function saveConfig() {
@@ -331,7 +375,17 @@
       metaComercial: parseInt(document.getElementById('cfg-meta-comercial').value) || 0,
     };
     localStorage.setItem('etm_config', JSON.stringify(cfg));
+
+    // EmailJS credentials
+    const pubKey   = document.getElementById('cfg-emailjs-pubkey').value.trim();
+    const serviceId = document.getElementById('cfg-emailjs-service').value.trim();
+    const templateId = document.getElementById('cfg-emailjs-template').value.trim();
+    if (pubKey && serviceId && templateId) {
+      localStorage.setItem('etm_emailjs', JSON.stringify({ publicKey: pubKey, serviceId, templateId }));
+    }
+
     showToast('Configuración guardada correctamente');
+    loadConfig(); // refresh status
     document.getElementById('cfg-new-pass').value = '';
     document.getElementById('cfg-confirm-pass').value = '';
   }
