@@ -3,20 +3,12 @@
    Proyectos + Tareas con notificaciones de email via EmailJS
    ============================================================ */
 
-// ── Equipo & Emails ────────────────────────────────────────
-const TEAM_EMAILS = {
-  'Nicolás Uranga':           'nicolas.uranga@emprendetumente.org',
-  'María Ignacia':            'ignacia.cominetti@emprendetumente.org',
-  'Ignacia Cisternas':        'ignacia.cisternas@emprendetumente.org',
-  'Juan Pablo Lobos':         'juan.lobos@emprendetumente.org',
-  'Catalina Pizarro':         'kathalina.pizarro@emprendetumente.org',
-  'Pamela Abello':            'pamela.abello@emprendetumente.org',
-  'Javiera López':            'javiera.lopez@emprendetumente.org',
-  'Daniela Alegría':          'daniela.alegria@emprendetumente.org',
-  'Andrea Báez':              'andrea.baez@emprendetumente.org',
-};
-
-const TEAM_MEMBERS = Object.keys(TEAM_EMAILS).concat(['León Fernández de Castro','(Otro)']);
+// ── Equipo ─────────────────────────────────────────────────
+const TEAM_MEMBERS = [
+  'Nicolás Uranga','María Ignacia','Juan Pablo Lobos','Ignacia Cisternas',
+  'León Fernández de Castro','Pamela Abello','Catalina Pizarro',
+  'Javiera López','Andrea Báez','Daniela Alegría','(Otro)',
+];
 
 const AREAS = ['Producción','Comercial','Marketing','Ecosistemas','Dirección','RRHH','Operaciones'];
 
@@ -94,48 +86,6 @@ function escapeHtml(str) {
 function estadoBadgeTareas(estado) {
   const map = { 'Pendiente':'badge-yellow','En curso':'badge-blue','Completada':'badge-green','Bloqueada':'badge-red' };
   return `<span class="badge ${map[estado]||'badge-gray'}">${estado}</span>`;
-}
-
-// ═══════════════════════════════════════════════════════════
-//  EMAIL NOTIFICATIONS (EmailJS)
-// ═══════════════════════════════════════════════════════════
-function checkAndSendNotifications() {
-  const creds = JSON.parse(localStorage.getItem('etm_emailjs') || '{}');
-  if (!creds.publicKey || !creds.serviceId || !creds.templateId) return;
-
-  const tareas = LS.get('tareas', DEFAULT_TAREAS);
-  const todayStr = today0().toISOString().split('T')[0];
-  const sentKey = 'etm_notif_' + todayStr;
-  const alreadySent = JSON.parse(localStorage.getItem(sentKey) || '[]');
-
-  const proximasTareas = tareas.filter(t => isProxima(t));
-  if (!proximasTareas.length) return;
-
-  // Initialize EmailJS
-  if (window.emailjs) {
-    emailjs.init({ publicKey: creds.publicKey });
-
-    proximasTareas.forEach(t => {
-      if (alreadySent.includes(t.id)) return;
-      const email = TEAM_EMAILS[t.responsable];
-      if (!email) return;
-
-      emailjs.send(creds.serviceId, creds.templateId, {
-        to_email:    email,
-        responsable: t.responsable,
-        tarea:       t.tarea,
-        proyecto:    t.proyecto,
-        plazo:       t.plazo,
-        mensaje:     'Tarea con fecha próxima a cumplirse. ¿La tienes lista?',
-      }).then(() => {
-        alreadySent.push(t.id);
-        localStorage.setItem(sentKey, JSON.stringify(alreadySent));
-        console.log('✉️ Notificación enviada a', email, '→', t.tarea);
-      }).catch(err => {
-        console.warn('EmailJS error:', err);
-      });
-    });
-  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -395,10 +345,7 @@ function renderTareas() {
       </td>
       <td><span class="badge badge-purple" style="font-size:11px">${escapeHtml(t.proyecto)}</span></td>
       <td style="white-space:nowrap">${escapeHtml(t.plazo)}</td>
-      <td>
-        <div style="font-size:12px;font-weight:600">${escapeHtml(t.responsable)}</div>
-        ${email ? `<div style="font-size:10px;color:#9CA3AF">${email}</div>` : ''}
-      </td>
+      <td style="font-size:12px;font-weight:600">${escapeHtml(t.responsable)}</td>
       <td><span class="badge badge-gray" style="font-size:11px">${escapeHtml(t.area)}</span></td>
       <td>${estadoBadgeTareas(t.estado)}</td>
       <td>
@@ -526,7 +473,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   switchTab('proyectos');
   bindFilters();
-
-  // Check email notifications (only if EmailJS configured)
-  setTimeout(checkAndSendNotifications, 1500);
 });
